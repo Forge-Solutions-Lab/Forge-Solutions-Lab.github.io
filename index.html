@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge Solutions Lab — AI Proactive Support สำหรับ Data Center</title>
+<meta name="description" content="ระบบ Gen Ticket สำหรับ Data Center Datalog & Ticket Automation — เปลี่ยน Data Center ของคุณให้ล้ำหน้าด้วย AI Proactive Support (RAG & Text-to-SQL)">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2306b6d4'/%3E%3Cpath d='M17 5 L8 18 L14 18 L13 27 L24 12 L17 12 Z' fill='white'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        display: ['"Space Grotesk"', '"Noto Sans Thai"', 'sans-serif'],
+        body: ['"Noto Sans Thai"', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'monospace'],
+      },
+      colors: {
+        ink: {
+          950:'#070a14',900:'#0b0f1d',800:'#111729',700:'#1a2238',
+          600:'#243049',500:'#3a4866',400:'#5a6a8a',300:'#8896b3',
+          200:'#b4c0d6',100:'#dde4f0',50:'#f1f5fb',
+        },
+        brand: {50:'#ecfdff',100:'#cffafe',200:'#a5f0fa',300:'#67e3f7',400:'#22d3ee',500:'#06b6d4',600:'#0891b2',700:'#0e7490',800:'#155e75',900:'#164e63'},
+        accent: {400:'#84cc16',500:'#65a30d',600:'#4d7c0f'},
+        amber: {400:'#fbbf24',500:'#f59e0b'},
+      },
+    }
+  }
+}
+</script>
+<style>
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  body { font-family: 'Noto Sans Thai', sans-serif; background-color: #070a14; color: #dde4f0; overflow-x: hidden; }
+  h1,h2,h3,h4,h5,h6 { font-family: 'Space Grotesk', 'Noto Sans Thai', sans-serif; letter-spacing: -0.01em; }
+  ::selection { background-color: rgba(34,211,238,0.3); color: #fff; }
+  .text-gradient { background: linear-gradient(135deg,#22d3ee 0%,#67e3f7 50%,#84cc16 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .text-gradient-cyan { background: linear-gradient(135deg,#22d3ee 0%,#67e3f7 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .glass { background: rgba(17,23,41,0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(34,211,238,0.1); }
+  .glass-light { background: rgba(255,255,255,0.04); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.08); }
+  .grid-bg { background-image: linear-gradient(rgba(34,211,238,0.06) 1px,transparent 1px), linear-gradient(90deg,rgba(34,211,238,0.06) 1px,transparent 1px); background-size: 50px 50px; }
+  .grid-bg-fine { background-image: linear-gradient(rgba(34,211,238,0.04) 1px,transparent 1px), linear-gradient(90deg,rgba(34,211,238,0.04) 1px,transparent 1px); background-size: 24px 24px; }
+  .glow-cyan { box-shadow: 0 0 30px rgba(34,211,238,0.15), 0 0 60px rgba(34,211,238,0.08); }
+  .glow-cyan-strong { box-shadow: 0 0 20px rgba(34,211,238,0.4), 0 0 40px rgba(34,211,238,0.2); }
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: #070a14; }
+  ::-webkit-scrollbar-thumb { background: #1a2238; border-radius: 5px; border: 2px solid #070a14; }
+  ::-webkit-scrollbar-thumb:hover { background: #243049; }
+
+  @keyframes fadeUp { 0%{opacity:0;transform:translateY(30px)} 100%{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { 0%{opacity:0} 100%{opacity:1} }
+  @keyframes pulseGlow { 0%,100%{opacity:0.4} 50%{opacity:0.8} }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
+  @keyframes scan { 0%{transform:translateY(-100%)} 100%{transform:translateY(100%)} }
+  @keyframes gridMove { 0%{background-position:0 0} 100%{background-position:50px 50px} }
+  @keyframes ping { 75%,100%{transform:scale(2);opacity:0} }
+
+  .animate-fade-up { animation: fadeUp 0.7s ease-out forwards; }
+  .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+  .animate-pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
+  .animate-float { animation: float 6s ease-in-out infinite; }
+  .animate-scan { animation: scan 4s linear infinite; }
+  .animate-grid-move { animation: gridMove 20s linear infinite; }
+  .animate-ping { animation: ping 1s cubic-bezier(0,0,0.2,1) infinite; }
+
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+  .reveal-delay-5 { transition-delay: 0.5s; }
+</style>
+  <meta property="og:image" content="https://bolt.new/static/og_default.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
+</head>
+<body class="min-h-screen font-body antialiased">
+
+<!-- ===== NAVBAR ===== -->
+<header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-transparent py-5">
+  <nav class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+    <a href="#hero" class="flex items-center gap-2.5 group">
+      <div class="relative w-9 h-9 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center glow-cyan transition-transform duration-300 group-hover:scale-110">
+        <svg class="w-5 h-5 text-white" fill="white" viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+      </div>
+      <div class="flex flex-col leading-none">
+        <span class="font-display font-bold text-white text-sm tracking-wide">FORGE</span>
+        <span class="font-display text-brand-400 text-[10px] tracking-[0.15em] font-medium">SOLUTIONS LAB</span>
+      </div>
+    </a>
+    <div class="hidden lg:flex items-center gap-1" id="nav-links"></div>
+    <div class="hidden lg:flex items-center gap-3">
+      <button onclick="scrollTo('#contact')" class="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-brand-500 to-brand-600 rounded-lg hover:shadow-lg hover:shadow-brand-500/30 hover:scale-105 transition-all duration-300">นัดหมายสาธิตระบบ</button>
+    </div>
+    <button id="mobile-toggle" class="lg:hidden w-10 h-10 flex items-center justify-center text-white rounded-lg hover:bg-ink-800 transition-colors">
+      <svg class="w-6 h-6" id="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <svg class="w-6 h-6 hidden" id="close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </nav>
+  <div id="mobile-menu" class="lg:hidden overflow-hidden transition-all duration-300 max-h-0">
+    <div class="px-6 pb-4 flex flex-col gap-1 bg-ink-900/95 backdrop-blur-xl rounded-2xl mx-4 border border-brand-500/10" id="mobile-links"></div>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section id="hero" class="relative min-h-screen flex items-center pt-28 pb-16 overflow-hidden">
+  <div class="absolute inset-0 grid-bg animate-grid-move opacity-60"></div>
+  <div class="absolute inset-0 bg-gradient-to-b from-ink-950/40 via-ink-950/80 to-ink-950"></div>
+  <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-500/10 rounded-full blur-[120px] animate-pulse-glow"></div>
+  <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent-500/8 rounded-full blur-[120px] animate-pulse-glow" style="animation-delay:1.5s"></div>
+  <div class="absolute inset-0 overflow-hidden pointer-events-none"><div class="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-400/30 to-transparent animate-scan"></div></div>
+
+  <div class="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center w-full">
+    <div class="flex flex-col gap-6">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-light w-fit animate-fade-in">
+        <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-accent-400"></span></span>
+        <span class="text-xs font-medium text-ink-200 tracking-wide">AI Proactive Support · ทำงาน 24/7 อัตโนมัติ</span>
+      </div>
+      <h1 class="font-display text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.15] text-white animate-fade-up">
+        เปลี่ยน Data Center ของคุณ<br>ให้ล้ำหน้าด้วย<br><span class="text-gradient">AI Proactive Support</span>
+      </h1>
+      <p class="text-lg text-ink-300 max-w-xl leading-relaxed animate-fade-up" style="animation-delay:0.1s;animation-fill-mode:both">
+        ยกระดับการจัดการ Alert และแจ้งเตือนลูกค้าอัตโนมัติด้วย AI (RAG &amp; Text-to-SQL) หมดปัญหาความล่าช้าในการตรวจสอบ Manual ตอบสนอง SLA ได้เร็วกว่า และให้บริการแบบ Proactive ได้อย่างแท้จริง
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 animate-fade-up" style="animation-delay:0.2s;animation-fill-mode:both">
+        <button onclick="scrollTo('#contact')" class="group px-7 py-3.5 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:shadow-xl hover:shadow-brand-500/30 hover:scale-105 transition-all duration-300">
+          นัดหมายสาธิตระบบ
+          <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+        <button onclick="scrollTo('#solution')" class="group px-7 py-3.5 glass text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:bg-ink-700/60 transition-all duration-300">
+          <svg class="w-5 h-5 text-brand-400" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          ปรึกษาทีมวิศวกรของเรา
+        </button>
+      </div>
+      <div class="flex flex-wrap gap-6 pt-4 animate-fade-up" style="animation-delay:0.3s;animation-fill-mode:both">
+        <div class="flex items-center gap-2 text-sm text-ink-300"><svg class="w-4 h-4 text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> RBAC Security</div>
+        <div class="flex items-center gap-2 text-sm text-ink-300"><svg class="w-4 h-4 text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg> Medallion Architecture</div>
+        <div class="flex items-center gap-2 text-sm text-ink-300"><svg class="w-4 h-4 text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Real-time AI Analysis</div>
+      </div>
+    </div>
+
+    <!-- Dashboard mockup -->
+    <div class="relative animate-fade-up" style="animation-delay:0.4s;animation-fill-mode:both">
+      <div class="relative glass rounded-2xl p-6 glow-cyan">
+        <div class="flex items-center justify-between mb-5">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-brand-500/20 flex items-center justify-center"><svg class="w-5 h-5 text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></div>
+            <div><p class="text-sm font-semibold text-white">Gen Ticket Engine</p><p class="text-xs text-ink-400">Live · Data Center Datalog</p></div>
+          </div>
+          <div class="flex items-center gap-2"><span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent-400"></span></span><span class="text-xs font-medium text-accent-400">ACTIVE</span></div>
+        </div>
+        <div class="grid grid-cols-3 gap-3 mb-5">
+          <div class="bg-ink-800/50 rounded-xl p-3 border border-white/5"><p class="text-xl font-display font-bold text-brand-400">12,847</p><p class="text-[10px] text-ink-400 mt-0.5">Tickets สร้าง</p></div>
+          <div class="bg-ink-800/50 rounded-xl p-3 border border-white/5"><p class="text-xl font-display font-bold text-accent-400">11,203</p><p class="text-[10px] text-ink-400 mt-0.5">ส่งอีเมลอัตโนมัติ</p></div>
+          <div class="bg-ink-800/50 rounded-xl p-3 border border-white/5"><p class="text-xl font-display font-bold text-amber-400">0.3s</p><p class="text-[10px] text-ink-400 mt-0.5">เวลาเฉลี่ย</p></div>
+        </div>
+        <div class="space-y-2" id="ticket-log">
+          <p class="text-xs font-medium text-ink-400 mb-2">Recent Tickets</p>
+        </div>
+        <div class="mt-5 pt-5 border-t border-white/5">
+          <div class="flex items-end justify-between gap-1 h-16" id="hero-chart"></div>
+          <p class="text-[10px] text-ink-400 mt-2">อัตราการสร้าง Ticket · 12 ช่วงล่าสุด</p>
+        </div>
+      </div>
+      <div class="absolute -top-4 -right-4 glass rounded-xl px-4 py-3 glow-cyan-strong animate-float">
+        <div class="flex items-center gap-2"><svg class="w-5 h-5 text-accent-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 12 4.5z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 12 4.5z"/></svg><div><p class="text-sm font-bold text-white">RAG + Text-to-SQL</p><p class="text-[10px] text-ink-300">AI วิเคราะห์อัตโนมัติ</p></div></div>
+      </div>
+      <div class="absolute -bottom-4 -left-4 glass rounded-xl px-4 py-3 glow-cyan animate-float" style="animation-delay:2s">
+        <div class="flex items-center gap-2"><svg class="w-5 h-5 text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><div><p class="text-sm font-bold text-white">Auto Email</p><p class="text-[10px] text-ink-300">แจ้งลูกค้าอัตโนมัติ</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="relative py-16 border-y border-brand-500/10 bg-ink-900/50">
+  <div class="absolute inset-0 grid-bg-fine opacity-30"></div>
+  <div class="relative max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8" id="stats-bar"></div>
+</section>
+
+<!-- ===== PROBLEM ===== -->
+<section id="problem" class="relative py-24 overflow-hidden">
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-red-500/5 rounded-full blur-[150px]"></div>
+  <div class="relative max-w-7xl mx-auto px-6" id="problem-section">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <div class="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full glass-light mb-5"><span class="w-1.5 h-1.5 rounded-full bg-red-400"></span><span class="text-xs font-medium text-red-300 tracking-wide uppercase">Pain Points</span></div>
+      <h2 class="reveal reveal-delay-1 font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">คุณกำลังเผชิญกับปัญหาเหล่านี้<br><span class="text-gradient-cyan">ใน Data Center อยู่หรือไม่?</span></h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6" id="problem-cards"></div>
+  </div>
+</section>
+
+<!-- ===== SOLUTION ===== -->
+<section id="solution" class="relative py-24 bg-ink-900/40 overflow-hidden">
+  <div class="absolute inset-0 grid-bg-fine opacity-20"></div>
+  <div class="absolute top-1/3 right-0 w-96 h-96 bg-brand-500/5 rounded-full blur-[120px]"></div>
+  <div class="absolute bottom-1/3 left-0 w-96 h-96 bg-accent-500/5 rounded-full blur-[120px]"></div>
+  <div class="relative max-w-7xl mx-auto px-6" id="solution-section">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <div class="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full glass-light mb-5"><span class="w-1.5 h-1.5 rounded-full bg-accent-400"></span><span class="text-xs font-medium text-accent-400 tracking-wide uppercase">Our Solution</span></div>
+      <h2 class="reveal reveal-delay-1 font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">ยกระดับการทำงานด้วย<span class="text-gradient-cyan"> Automated Ticket Generation Engine</span></h2>
+      <p class="reveal reveal-delay-2 text-lg text-ink-300 mt-5">ระบบของเราเปลี่ยนข้อมูลดิบให้เป็นการแจ้งเตือนเชิงรุกแบบอัตโนมัติ ด้วยสถาปัตยกรรมข้อมูลชั้นเลิศและเทคโนโลยี AI</p>
+    </div>
+    <!-- Flowchart -->
+    <div class="reveal reveal-delay-2 mb-20">
+      <div class="glass rounded-2xl p-8 md:p-10">
+        <p class="text-center text-xs font-medium text-ink-400 uppercase tracking-wider mb-8">Data Flow: จากตู้ Rack ถึงลูกค้า</p>
+        <div class="hidden lg:flex items-center justify-between gap-2" id="flow-desktop"></div>
+        <div class="lg:hidden flex flex-col gap-3" id="flow-mobile"></div>
+        <div class="grid md:grid-cols-4 gap-4 mt-8 pt-8 border-t border-white/5" id="flow-descs"></div>
+      </div>
+    </div>
+    <!-- Detail cards -->
+    <div class="space-y-6" id="solution-details"></div>
+  </div>
+</section>
+
+<!-- ===== KEY FEATURES ===== -->
+<section id="features" class="relative py-24 overflow-hidden">
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-brand-500/5 rounded-full blur-[150px]"></div>
+  <div class="relative max-w-7xl mx-auto px-6" id="features-section">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <div class="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full glass-light mb-5"><span class="w-1.5 h-1.5 rounded-full bg-brand-400"></span><span class="text-xs font-medium text-brand-300 tracking-wide uppercase">Key Features &amp; Add-ons</span></div>
+      <h2 class="reveal reveal-delay-1 font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">ฟีเจอร์เด่นที่ตอบโจทย์<span class="text-gradient-cyan"> ระดับองค์กร</span></h2>
+      <p class="reveal reveal-delay-2 text-lg text-ink-300 mt-5">สร้างความมั่นใจว่าระบบของเราปลอดภัยและควบคุมได้</p>
+    </div>
+    <!-- Dashboard mockup -->
+    <div class="reveal reveal-delay-2 mb-12">
+      <div class="glass rounded-2xl p-6 md:p-8 glow-cyan">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-brand-500/20 flex items-center justify-center"><svg class="w-5 h-5 text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <div><p class="text-sm font-semibold text-white">Ops Dashboard — ตรวจสอบ Ticket</p><p class="text-xs text-ink-400">Human-in-the-Loop Validation</p></div>
+          </div>
+          <span class="text-xs font-medium text-amber-400 px-3 py-1 rounded-full bg-amber-400/10">รอการอนุมัติ</span>
+        </div>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="md:col-span-2 space-y-4">
+            <div class="bg-ink-800/40 rounded-xl p-5 border border-white/5">
+              <div class="flex items-center gap-2 mb-3"><span class="text-xs font-mono text-brand-400">TKT-4821</span><span class="text-xs text-ink-400">·</span><span class="text-xs text-ink-400">Rack-A12</span><span class="text-xs px-2 py-0.5 rounded-full bg-red-500/15 text-red-400 font-medium">Critical</span></div>
+              <p class="text-sm text-white mb-2">อุณหภูมิเกิน 35°C เป็นครั้งที่ 3 ในวันนี้</p>
+              <div class="space-y-1.5 mt-3">
+                <div class="flex justify-between text-xs"><span class="text-ink-400">อุณหภูมิสูงสุด</span><span class="text-amber-400 font-mono">37.2°C</span></div>
+                <div class="flex justify-between text-xs"><span class="text-ink-400">ความถี่</span><span class="text-white font-mono">3 ครั้ง / วัน</span></div>
+                <div class="flex justify-between text-xs"><span class="text-ink-400">SLA Status</span><span class="text-red-400 font-medium">ใกล้ผิด SLA</span></div>
+              </div>
+            </div>
+            <div class="bg-ink-800/40 rounded-xl p-5 border border-white/5">
+              <div class="flex items-center gap-2 mb-3"><svg class="w-4 h-4 text-accent-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><p class="text-xs font-medium text-accent-400">AI ร่างอีเมลแล้ว — รอตรวจสอบ</p></div>
+              <div class="text-xs text-ink-300 space-y-1.5">
+                <p><span class="text-ink-400">ถึง:</span> customer@company.com</p>
+                <p><span class="text-ink-400">หัวข้อ:</span> แจ้งเตือน: อุณหภูมิ Rack-A12 เกินเกณฑ์</p>
+                <p class="pt-1 leading-relaxed">เรียน ลูกค้า, ระบบตรวจพบว่าอุณหภูมิในตู้ Rack-A12 เกิน 35°C เป็นครั้งที่ 3 ในวันนี้...<span class="text-ink-500"> (แก้ไขได้ก่อนส่ง)</span></p>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col gap-3">
+            <div class="bg-ink-800/40 rounded-xl p-5 border border-white/5">
+              <p class="text-xs font-medium text-ink-400 uppercase tracking-wider mb-3">การกระทำ</p>
+              <div class="space-y-2">
+                <button class="w-full px-4 py-2.5 bg-accent-500/15 text-accent-400 rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-accent-500/25 transition-colors"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> อนุมัติ &amp; ส่ง</button>
+                <button class="w-full px-4 py-2.5 bg-ink-700/50 text-ink-200 rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-ink-700/80 transition-colors"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> แก้ไขก่อนส่ง</button>
+                <button class="w-full px-4 py-2.5 bg-red-500/10 text-red-400 rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-red-500/20 transition-colors">ปฏิเสธ Ticket</button>
+              </div>
+            </div>
+            <div class="bg-ink-800/40 rounded-xl p-5 border border-white/5">
+              <div class="flex items-center gap-2 mb-3"><svg class="w-4 h-4 text-ink-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><p class="text-xs font-medium text-ink-400 uppercase tracking-wider">Audit Log</p></div>
+              <div class="space-y-1.5 text-[10px] text-ink-400 font-mono"><p>14:32 — AI สร้าง Ticket</p><p>14:32 — AI ร่างอีเมล</p><p>14:33 — รอ Ops ตรวจสอบ...</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6" id="feature-cards"></div>
+  </div>
+</section>
+
+<!-- ===== TRUSTED STANDARDS ===== -->
+<section id="standards" class="relative py-24 bg-ink-900/40 overflow-hidden">
+  <div class="absolute inset-0 grid-bg-fine opacity-20"></div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-brand-500/5 rounded-full blur-[150px]"></div>
+  <div class="relative max-w-7xl mx-auto px-6" id="standards-section">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <div class="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full glass-light mb-5"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span><span class="text-xs font-medium text-amber-400 tracking-wide uppercase">Trusted Standards</span></div>
+      <h2 class="reveal reveal-delay-1 font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">มาตรฐานสากลที่<span class="text-gradient-cyan">เรารองรับ</span></h2>
+      <p class="reveal reveal-delay-2 text-lg text-ink-300 mt-5">ออกแบบและพัฒนาบนมาตรฐานวิศวกรรมระดับโลก</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6" id="standards-cards"></div>
+  </div>
+</section>
+
+<!-- ===== TEAM ===== -->
+<section id="team" class="relative py-24 overflow-hidden">
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-brand-500/5 rounded-full blur-[150px]"></div>
+  <div class="relative max-w-3xl mx-auto px-6" id="team-section">
+    <div class="text-center mb-12">
+      <div class="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full glass-light mb-5"><span class="w-1.5 h-1.5 rounded-full bg-brand-400"></span><span class="text-xs font-medium text-brand-300 tracking-wide uppercase">Team</span></div>
+      <h2 class="reveal reveal-delay-1 font-display text-3xl md:text-4xl font-bold text-white leading-tight">สมาชิกในทีม</h2>
+      <p class="reveal reveal-delay-2 text-sm text-ink-400 mt-3 font-mono">TEAM RACK — TR-01</p>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <div class="flex items-stretch bg-ink-900 border border-ink-600 rounded-2xl overflow-hidden">
+        <div class="hidden sm:block flex-shrink-0 w-5 border-l border-r border-ink-600" style="background-image:radial-gradient(circle,#453a2d 2px,transparent 2.4px);background-size:100% 46px;background-position:50% 23px"></div>
+        <div class="flex-1 min-w-0" id="team-rack"></div>
+        <div class="hidden sm:block flex-shrink-0 w-5 border-l border-r border-ink-600" style="background-image:radial-gradient(circle,#453a2d 2px,transparent 2.4px);background-size:100% 46px;background-position:50% 23px"></div>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-3 flex justify-between items-center mt-5 text-xs font-mono text-ink-400"><span>Forge-Solutions-Lab</span><span>Rack TR-01 — 5 units installed</span></div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact" class="relative py-24 overflow-hidden">
+  <div class="absolute top-0 left-1/4 w-96 h-96 bg-brand-500/8 rounded-full blur-[120px]"></div>
+  <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-accent-500/8 rounded-full blur-[120px]"></div>
+  <div class="relative max-w-7xl mx-auto px-6" id="contact-section">
+    <div class="grid lg:grid-cols-2 gap-12 items-start">
+      <div>
+        <div class="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full glass-light mb-5"><span class="w-1.5 h-1.5 rounded-full bg-accent-400"></span><span class="text-xs font-medium text-accent-400 tracking-wide uppercase">Final CTA</span></div>
+        <h2 class="reveal reveal-delay-1 font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">พร้อมที่จะเปลี่ยนทีม Ops ของคุณ<br>ให้ทำงานแบบ<span class="text-gradient-cyan"> Proactive แล้วหรือยัง?</span></h2>
+        <p class="reveal reveal-delay-2 text-lg text-ink-300 mt-5 max-w-lg">ลดเวลาทำงาน ลดข้อผิดพลาด และเพิ่มความประทับใจให้ลูกค้า Data Center ของคุณตั้งแต่วันนี้</p>
+        <div class="reveal reveal-delay-3 space-y-4 mt-8">
+          <div class="flex items-center gap-4 group"><div class="w-11 h-11 rounded-xl glass flex items-center justify-center group-hover:bg-brand-500/15 transition-colors duration-300"><svg class="w-5 h-5 text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><p class="text-xs text-ink-400">อีเมล</p><p class="text-sm text-white font-medium">contact@forge-solutions-lab.com</p></div></div>
+          <div class="flex items-center gap-4 group"><div class="w-11 h-11 rounded-xl glass flex items-center justify-center group-hover:bg-brand-500/15 transition-colors duration-300"><svg class="w-5 h-5 text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><div><p class="text-xs text-ink-400">โทร</p><p class="text-sm text-white font-medium">+66 (0) 2-123-4567</p></div></div>
+          <div class="flex items-center gap-4 group"><div class="w-11 h-11 rounded-xl glass flex items-center justify-center group-hover:bg-brand-500/15 transition-colors duration-300"><svg class="w-5 h-5 text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><p class="text-xs text-ink-400">สำนักงาน</p><p class="text-sm text-white font-medium">กรุงเทพมหานคร, ประเทศไทย</p></div></div>
+        </div>
+        <div class="reveal reveal-delay-4 mt-8 p-4 rounded-xl glass-light flex items-center gap-3"><svg class="w-5 h-5 text-accent-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><p class="text-sm text-ink-200">เราตอบกลับทุกการสอบถามภายใน 1 วันทำการ</p></div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="relative glass rounded-2xl p-8 glow-cyan" id="contact-form-container">
+          <form id="contact-form" class="space-y-5">
+            <div><label class="block text-xs font-medium text-ink-300 mb-2">ชื่อ-นามสกุล</label><div class="relative"><input type="text" name="name" required placeholder="สมชาย ใจดี" class="w-full px-4 py-3 pl-11 bg-ink-800/50 border border-white/10 rounded-xl text-white placeholder-ink-500 focus:outline-none focus:border-brand-400/40 focus:ring-1 focus:ring-brand-400/20 transition-all"><svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div></div>
+            <div><label class="block text-xs font-medium text-ink-300 mb-2">อีเมลที่ใช้งาน</label><div class="relative"><input type="email" name="email" required placeholder="name@company.com" class="w-full px-4 py-3 pl-11 bg-ink-800/50 border border-white/10 rounded-xl text-white placeholder-ink-500 focus:outline-none focus:border-brand-400/40 focus:ring-1 focus:ring-brand-400/20 transition-all"><svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div></div>
+            <div><label class="block text-xs font-medium text-ink-300 mb-2">บริษัท</label><div class="relative"><input type="text" name="company" placeholder="ชื่อบริษัทของคุณ" class="w-full px-4 py-3 pl-11 bg-ink-800/50 border border-white/10 rounded-xl text-white placeholder-ink-500 focus:outline-none focus:border-brand-400/40 focus:ring-1 focus:ring-brand-400/20 transition-all"><svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg></div></div>
+            <div><label class="block text-xs font-medium text-ink-300 mb-2">รายละเอียดเพิ่มเติม</label><textarea name="message" rows="4" placeholder="บอกเราเกี่ยวกับ Data Center ของคุณ และสิ่งที่ต้องการให้อัตโนมัติ..." class="w-full px-4 py-3 bg-ink-800/50 border border-white/10 rounded-xl text-white placeholder-ink-500 focus:outline-none focus:border-brand-400/40 focus:ring-1 focus:ring-brand-400/20 transition-all resize-none"></textarea></div>
+            <button type="submit" class="group w-full px-6 py-3.5 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:shadow-xl hover:shadow-brand-500/30 hover:scale-[1.02] transition-all duration-300">ติดต่อเราเพื่อพูดคุยรายละเอียด<svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            <p class="text-xs text-ink-400 text-center">การส่งแบบฟอร์ม ถือว่าคุณยอมรับนโยบายความเป็นส่วนตัวของเรา</p>
+          </form>
+          <div id="contact-success" class="hidden flex-col items-center justify-center text-center py-12">
+            <div class="w-20 h-20 rounded-full bg-accent-500/15 flex items-center justify-center mb-5 animate-fade-in"><svg class="w-10 h-10 text-accent-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <h3 class="font-display text-2xl font-bold text-white mb-2">ขอบคุณครับ!</h3>
+            <p class="text-ink-300 max-w-sm">เราได้รับคำขอของคุณแล้ว ทีมงานของเราจะติดต่อกลับภายใน 1 วันทำการ เพื่อนัดหมายสาธิตระบบ</p>
+            <button onclick="resetForm()" class="mt-6 px-6 py-2.5 text-sm font-semibold text-brand-400 hover:text-brand-300 transition-colors">ส่งคำขอใหม่</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="relative border-t border-brand-500/10 bg-ink-950 pt-16 pb-8 overflow-hidden">
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-px bg-gradient-to-r from-transparent via-brand-400/20 to-transparent"></div>
+  <div class="relative max-w-7xl mx-auto px-6">
+    <div class="grid lg:grid-cols-5 gap-10 pb-12 border-b border-white/5">
+      <div class="lg:col-span-1">
+        <a href="#hero" class="flex items-center gap-2.5 mb-4 group">
+          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center glow-cyan transition-transform duration-300 group-hover:scale-110"><svg class="w-5 h-5 text-white" fill="white" viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
+          <div class="flex flex-col leading-none"><span class="font-display font-bold text-white text-sm tracking-wide">FORGE</span><span class="font-display text-brand-400 text-[10px] tracking-[0.15em] font-medium">SOLUTIONS LAB</span></div>
+        </a>
+        <p class="text-sm text-ink-400 leading-relaxed max-w-xs">ระบบ Gen Ticket สำหรับ Data Center Datalog &amp; Ticket Automation — AI Proactive Support</p>
+        <div class="flex gap-3 mt-5" id="footer-socials"></div>
+      </div>
+      <div id="footer-links"></div>
+    </div>
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 pt-8">
+      <p class="text-xs text-ink-400">&copy; 2026 Forge Solutions Lab. สงวนลิขสิทธิ์ทุกประการ</p>
+      <div class="flex items-center gap-2 text-xs text-ink-400"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-accent-400"></span></span> ระบบทำงานปกติ</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== DATA =====
+const NAV_LINKS = [
+  {label:'ปัญหา',href:'#problem'},{label:'วิธีการแก้',href:'#solution'},
+  {label:'ฟีเจอร์',href:'#features'},{label:'มาตรฐาน',href:'#standards'},
+  {label:'ทีม',href:'#team'},{label:'ติดต่อ',href:'#contact'}
+];
+const TICKET_LOG = [
+  {id:'TKT-4821',type:'อุณหภูมิเกิน 35°C',server:'Rack-A12',status:'สร้าง Ticket',time:'0.3s'},
+  {id:'TKT-4822',type:'ไฟตก 3 ครั้ง/วัน',server:'Rack-B07',status:'AI วิเคราะห์',time:'0.1s'},
+  {id:'TKT-4823',type:'แจ้งเตือนลูกค้า',server:'Rack-C03',status:'ส่งอีเมล',time:'0.5s'},
+  {id:'TKT-4824',type:'Humidity ผิดปกติ',server:'Rack-A18',status:'สร้าง Ticket',time:'0.2s'},
+  {id:'TKT-4825',type:'Power Usage สูง',server:'Rack-D11',status:'AI วิเคราะห์',time:'0.1s'},
+];
+const STATUS_COLORS = {'สร้าง Ticket':'text-brand-400 bg-brand-400/10','AI วิเคราะห์':'text-amber-400 bg-amber-400/10','ส่งอีเมล':'text-accent-400 bg-accent-400/10'};
+const STATS = [
+  {value:95,suffix:'%',label:'ลดเวลาตรวจสอบ Manual',color:'text-brand-400'},
+  {value:99,suffix:'.4%',label:'ความแม่นยำของ AI',color:'text-accent-400'},
+  {value:300,suffix:'ms',label:'เวลาตอบสนองเฉลี่ย',color:'text-amber-400'},
+  {value:24,suffix:'/7',label:'ทำงานอัตโนมัติตลอดเวลา',color:'text-brand-400'},
+];
+const PROBLEMS = [
+  {emoji:'⏳',title:'Manual Bottleneck',desc:'ทีม Ops เสียเวลาหลายชั่วโมงต่อวันในการดึงข้อมูลดิบ และนั่งนับจำนวน Alert ของตู้ Rack แต่ละตู้ด้วยตัวเอง',color:'text-amber-400',bg:'bg-amber-500/10',border:'hover:border-amber-400/20'},
+  {emoji:'🐢',title:'SLA Delay & Reactive Service',desc:'กว่าจะรู้ว่าอุณหภูมิเกินหรือไฟตก ก็เกิดผลกระทบไปแล้ว ลูกค้าไม่ได้รับการแจ้งเตือนล่วงหน้า (Proactive) ทำให้ความพึงพอใจลดลง',color:'text-red-400',bg:'bg-red-500/10',border:'hover:border-red-400/20'},
+  {emoji:'🧩',title:'Data Disconnection',desc:'ข้อมูล Raw Logs มหาศาล กระจัดกระจาย นำมาวิเคราะห์เพื่อสื่อสารทางธุรกิจได้ยากและเสี่ยงต่อความผิดพลาด',color:'text-brand-400',bg:'bg-brand-500/10',border:'hover:border-brand-400/20'},
+];
+const FLOW_STEPS = [
+  {label:'ตู้ Rack (IoT)',sub:'Raw Logs / Sensors',desc:'ข้อมูลดิบจากตู้ Rack ทุกตู้ — อุณหภูมิ ความชื้น ไฟ และ Logs',color:'text-brand-400',bg:'bg-brand-500/15',border:'border-brand-400/20',icon:'server'},
+  {label:'Medallion Pipeline',sub:'Bronze → Silver → Gold',desc:'เปลี่ยน Raw Logs ให้เป็นข้อมูลพร้อมใช้งาน ผ่าน 3 Layer แบบ Medallion Architecture',color:'text-accent-400',bg:'bg-accent-500/15',border:'border-accent-400/20',icon:'gitbranch'},
+  {label:'AI Analysis',sub:'RAG & Text-to-SQL',desc:'AI วิเคราะห์กฎทางธุรกิจ (SLA Thresholds) และสร้างคำสั่งดึงข้อมูลอัตโนมัติ',color:'text-amber-400',bg:'bg-amber-500/15',border:'border-amber-400/20',icon:'brain'},
+  {label:'ส่ง Email หาลูกค้า',sub:'Auto Ticket Email',desc:'AI ร่างอีเมลแจ้งเตือนลูกค้าอย่างเป็นทางการ พร้อมคำแนะนำเชิงวิศวกรรมโดยอัตโนมัติ',color:'text-brand-400',bg:'bg-brand-500/15',border:'border-brand-400/20',icon:'mail'},
+];
+const SOLUTION_DETAILS = [
+  {num:'01',title:'Smart Data Pipeline (Medallion Architecture)',desc:'เปลี่ยน Raw Logs ที่ยุ่งเหยิงให้เป็นข้อมูลพร้อมใช้งาน (Bronze → Silver → Gold Layer) ทำให้ระบบสามารถดึงสถิติรายลูกค้าได้อย่างรวดเร็วและแม่นยำ',points:['Bronze: Raw Data Ingestion','Silver: Cleaned & Validated','Gold: Business-ready Analytics'],color:'text-brand-400',bg:'bg-brand-500/10',icon:'database'},
+  {num:'02',title:'AI-Powered Text-to-SQL & RAG',desc:'วิเคราะห์ข้อมูลด้วยกฎทางธุรกิจ (SLA Thresholds) เช่น อุณหภูมิเกิน 35°C 3 ครั้ง/วัน ระบบจะวิเคราะห์ความรุนแรงและสร้างคำสั่งดึงข้อมูลอัตโนมัติ',points:['RAG: Retrieval-Augmented Generation','Text-to-SQL: แปลงคำถามเป็น SQL','SLA Threshold Rules Engine'],color:'text-accent-400',bg:'bg-accent-500/10',icon:'brain'},
+  {num:'03',title:'Automated Email Ticketing',desc:'ใช้ AI ร่างอีเมลแจ้งเตือนลูกค้าอย่างเป็นทางการ พร้อมคำแนะนำเชิงวิศวกรรม (เช่น การเพิ่มสเปคระบายความร้อน) โดยอัตโนมัติ',points:['AI-Generated Email Content','Engineering Recommendations','Multi-recipient Support'],color:'text-amber-400',bg:'bg-amber-500/10',icon:'mail'},
+];
+const FEATURES = [
+  {emoji:'👨‍💻',title:'Human-in-the-Loop Validation',desc:'หมดกังวลเรื่อง AI Hallucination ระบบมี Dashboard ให้ทีม Ops ตรวจสอบ แก้ไข และกดอนุมัติ (Approve & Send) ก่อนส่งอีเมลจริงทุกครั้ง',color:'text-brand-400',bg:'bg-brand-500/10',border:'hover:border-brand-400/20',icon:'usercheck'},
+  {emoji:'🔒',title:'Enterprise-Grade Security (RBAC)',desc:'ปกป้องข้อมูลความลับทางธุรกิจของลูกค้าด้วย Role-Based Access Control จำกัดสิทธิ์การเข้าถึงอย่างเข้มงวด',color:'text-accent-400',bg:'bg-accent-500/10',border:'hover:border-accent-400/20',icon:'shield'},
+  {emoji:'📝',title:'Audit Logging',desc:'บันทึกประวัติการสั่งงานและการเปิด Ticket ทุกขั้นตอน เพื่อความโปร่งใสและตรวจสอบย้อนหลังได้',color:'text-amber-400',bg:'bg-amber-500/10',border:'hover:border-amber-400/20',icon:'filetext'},
+];
+const STANDARDS = [
+  {title:'Databricks Medallion Architecture',desc:'เพื่อความเสถียรสูงสุดในการประมวลผล Big Data — แบ่งข้อมูลเป็น Bronze, Silver, Gold Layer เพื่อความน่าเชื่อถือและ scalability',tag:'Data Engineering',color:'text-brand-400',bg:'bg-brand-500/10',border:'hover:border-brand-400/20',icon:'layers'},
+  {title:'AWS Generative AI Best Practices',desc:'ขับเคลื่อนด้วยสถาปัตยกรรม RAG ที่ปลอดภัยและแม่นยำ สอดคล้องกับแนวทางการใช้ GenAI บน AWS อย่างเป็นทางการ',tag:'AI / ML',color:'text-accent-400',bg:'bg-accent-500/10',border:'hover:border-accent-400/20',icon:'cloud'},
+  {title:'ITIL Framework',desc:'สอดคล้องกับมาตรฐานสากลในการจัดการ Incident & Ticket Management ทำให้กระบวนการทำงานเป็นระบบและตรวจสอบได้',tag:'IT Service Management',color:'text-amber-400',bg:'bg-amber-500/10',border:'hover:border-amber-400/20',icon:'book'},
+];
+const MEMBERS = [
+  {ru:'RU-05',name:'พงษ์ดนัย สมภาร',sid:'6752301255',role:'Data Lead',photo:'https://images.pexels.com/photos/28442318/pexels-photo-28442318.jpeg?auto=compress&cs=tinysrgb&h=200&w=200'},
+  {ru:'RU-04',name:'ชรัฐภูมิ หวังเดช',sid:'6752301336',role:'CTO',photo:'https://images.pexels.com/photos/5308640/pexels-photo-5308640.jpeg?auto=compress&cs=tinysrgb&h=200&w=200'},
+  {ru:'RU-03',name:'ธีรภัทร ทองตำลึง',sid:'6752300194',role:'CEO',photo:'https://images.pexels.com/photos/16825855/pexels-photo-16825855.jpeg?auto=compress&cs=tinysrgb&h=200&w=200'},
+  {ru:'RU-02',name:'ถวายเกียรติ ปูวัง',sid:'6752301271',role:'AI Engineer',photo:'https://images.pexels.com/photos/38740728/pexels-photo-38740728.jpeg?auto=compress&cs=tinysrgb&h=200&w=200'},
+  {ru:'RU-01',name:'จิมมี่ โกรสเฮียรว์',sid:'6752300658',role:'ML Engineer',photo:'https://images.pexels.com/photos/5514779/pexels-photo-5514779.jpeg?auto=compress&cs=tinysrgb&h=200&w=200'},
+];
+const FOOTER_LINKS = {
+  'ผลิตภัณฑ์':['ฟีเจอร์','วิธีการทำงาน','มาตรฐาน','API Docs'],
+  'บริษัท':['เกี่ยวกับเรา','ร่วมงาน','บล็อก','พาร์ทเนอร์'],
+  'แหล่งข้อมูล':['เอกสาร','Knowledge Base','Status Page','Security'],
+  'นโยบาย':['นโยบายความเป็นส่วนตัว','เงื่อนไขการใช้งาน','Cookie Policy','SLA'],
+};
+
+// ===== SVG ICONS =====
+const ICONS = {
+  server:'<rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>',
+  gitbranch:'<line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>',
+  brain:'<path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 12 4.5z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 12 4.5z"/>',
+  mail:'<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>',
+  database:'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 5v14c0 1.1-4 3-9 3s-9-1.9-9-3V5"/><path d="M3 12c0 1.1 4 3 9 3s9-1.9 9-3"/>',
+  usercheck:'<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  filetext:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+  layers:'<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+  cloud:'<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>',
+  book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+  check:'<polyline points="20 6 9 17 4 12"/>',
+  arrowright:'<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+  arrowdown:'<line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>',
+  github:'<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>',
+  linkedin:'<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>',
+  twitter:'<path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>',
+};
+function svg(name, cls) { return '<svg class="'+cls+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'+ICONS[name]+'</svg>'; }
+
+// ===== UTILS =====
+function scrollTo(sel) { document.querySelector(sel)?.scrollIntoView({behavior:'smooth'}); }
+
+// ===== NAVBAR =====
+(function() {
+  const navLinks = document.getElementById('nav-links');
+  const mobileLinks = document.getElementById('mobile-links');
+  NAV_LINKS.forEach(l => {
+    navLinks.innerHTML += '<button onclick="scrollTo(\''+l.href+'\')" class="px-4 py-2 text-sm font-medium text-ink-300 hover:text-white transition-colors duration-200 relative group">'+l.label+'<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-brand-400 rounded-full transition-all duration-300 group-hover:w-6"></span></button>';
+    mobileLinks.innerHTML += '<button onclick="scrollTo(\''+l.href+'\')" class="px-4 py-3 text-left text-sm font-medium text-ink-200 hover:text-brand-400 hover:bg-ink-800 rounded-lg transition-colors">'+l.label+'</button>';
+  });
+  mobileLinks.innerHTML += '<button onclick="scrollTo(\'#contact\')" class="mt-2 px-4 py-3 text-sm font-semibold text-white bg-gradient-to-r from-brand-500 to-brand-600 rounded-lg text-center">นัดหมายสาธิตระบบ</button>';
+
+  const navbar = document.getElementById('navbar');
+  const menuIcon = document.getElementById('menu-icon');
+  const closeIcon = document.getElementById('close-icon');
+  const mobileMenu = document.getElementById('mobile-menu');
+  let mobileOpen = false;
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 24) {
+      navbar.classList.remove('bg-transparent','py-5');
+      navbar.classList.add('bg-ink-950/80','backdrop-blur-xl','border-b','border-brand-500/10','py-3');
+    } else {
+      navbar.classList.add('bg-transparent','py-5');
+      navbar.classList.remove('bg-ink-950/80','backdrop-blur-xl','border-b','border-brand-500/10','py-3');
+    }
+  });
+
+  document.getElementById('mobile-toggle').addEventListener('click', () => {
+    mobileOpen = !mobileOpen;
+    if (mobileOpen) {
+      menuIcon.classList.add('hidden'); closeIcon.classList.remove('hidden');
+      mobileMenu.classList.remove('max-h-0'); mobileMenu.classList.add('max-h-96','mt-4');
+    } else {
+      menuIcon.classList.remove('hidden'); closeIcon.classList.add('hidden');
+      mobileMenu.classList.add('max-h-0'); mobileMenu.classList.remove('max-h-96','mt-4');
+    }
+  });
+})();
+
+// ===== HERO TICKET LOG =====
+(function() {
+  const container = document.getElementById('ticket-log');
+  let logIndex = 0;
+  TICKET_LOG.forEach(t => {
+    container.innerHTML += '<div class="flex items-center gap-3 p-3 rounded-lg bg-ink-800/30 border border-white/5 transition-all duration-500" data-ticket="'+t.id+'"><span class="text-xs font-mono text-ink-400 w-16">'+t.id+'</span><div class="flex-1 min-w-0"><p class="text-sm text-white truncate">'+t.type+'</p><p class="text-xs text-ink-400">'+t.server+'</p></div><span class="text-[10px] font-medium px-2 py-1 rounded-full whitespace-nowrap '+STATUS_COLORS[t.status]+'">'+t.status+'</span><span class="text-xs font-mono text-ink-300 w-10 text-right">'+t.time+'</span></div>';
+  });
+  setInterval(() => {
+    logIndex = (logIndex + 1) % TICKET_LOG.length;
+    container.querySelectorAll('[data-ticket]').forEach((el, i) => {
+      if (i === logIndex) { el.classList.add('ring-1','ring-brand-400/40','bg-ink-800/60'); }
+      else { el.classList.remove('ring-1','ring-brand-400/40','bg-ink-800/60'); }
+    });
+  }, 2200);
+
+  // Hero chart
+  const chart = document.getElementById('hero-chart');
+  [40,65,50,80,60,90,70,95,75,85,60,100].forEach(h => {
+    chart.innerHTML += '<div class="flex-1 rounded-t bg-gradient-to-t from-brand-600/40 to-brand-400/80 transition-all duration-700 hover:from-brand-500/60 hover:to-brand-300/90" style="height:'+h+'%"></div>';
+  });
+})();
+
+// ===== STATS COUNT-UP =====
+(function() {
+  const bar = document.getElementById('stats-bar');
+  STATS.forEach(s => {
+    bar.innerHTML += '<div class="text-center" data-stat="'+s.value+'"><div class="font-display text-3xl md:text-4xl font-bold '+s.color+'"><span class="stat-num">0</span>'+s.suffix+'</div><p class="text-sm text-ink-300 mt-1">'+s.label+'</p></div>';
+  });
+  let animated = false;
+  function animateStats() {
+    if (animated) return;
+    const trigger = bar.getBoundingClientRect();
+    if (trigger.top < window.innerHeight && trigger.bottom > 0) {
+      animated = true;
+      bar.querySelectorAll('[data-stat]').forEach(el => {
+        const target = parseInt(el.dataset.stat);
+        const numEl = el.querySelector('.stat-num');
+        const start = performance.now();
+        function step(now) {
+          const p = Math.min((now - start) / 2000, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          numEl.textContent = Math.floor(target * eased);
+          if (p < 1) requestAnimationFrame(step);
+          else numEl.textContent = target;
+        }
+        requestAnimationFrame(step);
+      });
+    }
+  }
+  window.addEventListener('scroll', animateStats);
+  animateStats();
+})();
+
+// ===== PROBLEM CARDS =====
+(function() {
+  const container = document.getElementById('problem-cards');
+  PROBLEMS.forEach((p, i) => {
+    container.innerHTML += '<div class="reveal reveal-delay-'+(i+1)+' group relative p-7 rounded-2xl glass border border-white/5 '+p.border+' transition-all duration-500 hover:-translate-y-1"><div class="flex items-center gap-3 mb-5"><div class="w-14 h-14 rounded-xl '+p.bg+' flex items-center justify-center text-2xl">'+p.emoji+'</div><div class="w-10 h-10 rounded-lg '+p.bg+' flex items-center justify-center group-hover:scale-110 transition-transform duration-300"><span class="text-xl font-bold '+p.color+'">!</span></div></div><h3 class="font-display text-lg font-semibold text-white mb-3">'+p.title+'</h3><p class="text-sm text-ink-300 leading-relaxed">'+p.desc+'</p><div class="absolute bottom-0 left-7 right-7 h-px bg-gradient-to-r from-transparent via-red-400/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div></div>';
+  });
+})();
+
+// ===== SOLUTION FLOWCHART =====
+(function() {
+  const fd = document.getElementById('flow-desktop');
+  const fm = document.getElementById('flow-mobile');
+  const fdesc = document.getElementById('flow-descs');
+  FLOW_STEPS.forEach((s, i) => {
+    fd.innerHTML += '<div class="flex items-center flex-1"><div class="group relative flex flex-col items-center text-center flex-1 p-5 rounded-xl '+s.bg+' border '+s.border+' transition-all duration-500 hover:scale-105"><div class="w-14 h-14 rounded-xl bg-ink-800/80 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">'+svg(s.icon,'w-7 h-7 '+s.color)+'</div><p class="font-display text-sm font-semibold text-white">'+s.label+'</p><p class="text-[10px] text-ink-400 mt-1 font-mono">'+s.sub+'</p></div>'+(i < FLOW_STEPS.length - 1 ? svg('arrowright','w-6 h-6 text-ink-500 mx-1 flex-shrink-0') : '')+'</div>';
+    fm.innerHTML += '<div><div class="group relative flex items-center gap-4 p-4 rounded-xl '+s.bg+' border '+s.border+'"><div class="w-12 h-12 rounded-xl bg-ink-800/80 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">'+svg(s.icon,'w-6 h-6 '+s.color)+'</div><div><p class="font-display text-sm font-semibold text-white">'+s.label+'</p><p class="text-[10px] text-ink-400 font-mono">'+s.sub+'</p></div></div>'+(i < FLOW_STEPS.length - 1 ? '<div class="flex justify-center py-1">'+svg('arrowdown','w-5 h-5 text-ink-500')+'</div>' : '')+'</div>';
+    fdesc.innerHTML += '<p class="text-xs text-ink-300 leading-relaxed text-center">'+s.desc+'</p>';
+  });
+
+  // Solution detail cards
+  const sd = document.getElementById('solution-details');
+  SOLUTION_DETAILS.forEach((d, i) => {
+    let points = d.points.map(p => '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-ink-800/50 border border-white/5 text-xs text-ink-200">'+svg('check','w-3.5 h-3.5 text-accent-400')+p+'</span>').join('');
+    sd.innerHTML += '<div class="reveal reveal-delay-'+((i%3)+1)+' group flex flex-col md:flex-row gap-6 p-7 rounded-2xl glass hover:border-brand-400/20 transition-all duration-500"><div class="flex items-center gap-4 md:flex-col md:items-center md:w-32 flex-shrink-0"><div class="w-16 h-16 rounded-2xl '+d.bg+' flex items-center justify-center group-hover:scale-110 transition-transform duration-300">'+svg(d.icon,'w-8 h-8 '+d.color)+'</div><span class="font-display text-3xl font-bold text-ink-700 group-hover:text-ink-500 transition-colors duration-300">'+d.num+'</span></div><div class="flex-1"><h3 class="font-display text-xl font-semibold text-white mb-2">'+d.title+'</h3><p class="text-sm text-ink-300 leading-relaxed mb-4">'+d.desc+'</p><div class="flex flex-wrap gap-2">'+points+'</div></div></div>';
+  });
+})();
+
+// ===== FEATURE CARDS =====
+(function() {
+  const container = document.getElementById('feature-cards');
+  FEATURES.forEach((f, i) => {
+    container.innerHTML += '<div class="reveal reveal-delay-'+(i+1)+' group relative p-7 rounded-2xl glass border border-white/5 '+f.border+' transition-all duration-500 hover:-translate-y-1"><div class="flex items-center gap-3 mb-4"><div class="text-2xl">'+f.emoji+'</div><div class="w-11 h-11 rounded-xl '+f.bg+' flex items-center justify-center group-hover:scale-110 transition-transform duration-300">'+svg(f.icon,'w-5 h-5 '+f.color)+'</div></div><h3 class="font-display text-lg font-semibold text-white mb-2">'+f.title+'</h3><p class="text-sm text-ink-300 leading-relaxed">'+f.desc+'</p></div>';
+  });
+})();
+
+// ===== STANDARDS CARDS =====
+(function() {
+  const container = document.getElementById('standards-cards');
+  STANDARDS.forEach((s, i) => {
+    container.innerHTML += '<div class="reveal reveal-delay-'+(i+1)+' group relative p-8 rounded-2xl glass border border-white/5 '+s.border+' transition-all duration-500 hover:-translate-y-1"><span class="inline-block text-[10px] font-mono text-ink-400 px-2.5 py-1 rounded-full bg-ink-800/50 border border-white/5 mb-5">'+s.tag+'</span><div class="w-16 h-16 rounded-2xl '+s.bg+' flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">'+svg(s.icon,'w-8 h-8 '+s.color)+'</div><h3 class="font-display text-lg font-semibold text-white mb-3">'+s.title+'</h3><p class="text-sm text-ink-300 leading-relaxed">'+s.desc+'</p><div class="absolute bottom-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-brand-400/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div></div>';
+  });
+})();
+
+// ===== TEAM RACK =====
+(function() {
+  const container = document.getElementById('team-rack');
+  MEMBERS.forEach((m, i) => {
+    container.innerHTML += '<div class="flex items-center gap-4 md:gap-5 px-5 py-4 border-b border-ink-600 last:border-b-0 transition-colors duration-200 hover:bg-brand-500/5 group" style="animation:fadeUp 0.5s ease-out '+(0.15+i*0.15)+'s both"><span class="flex-shrink-0 w-2 h-2 rounded-full bg-accent-400" style="box-shadow:0 0 7px #57d68d;animation:fadeIn 0.4s ease '+(0.3+i*0.15)+'s both"></span><span class="hidden md:block flex-shrink-0 text-xs font-mono text-ink-400 w-12">'+m.ru+'</span><img src="'+m.photo+'" alt="'+m.name+'" loading="lazy" class="flex-shrink-0 w-14 h-14 object-cover border border-ink-500 rounded-sm" style="filter:grayscale(55%) sepia(18%) contrast(1.02)"><div class="flex-1 min-w-0"><h3 class="text-sm font-semibold text-white truncate">'+m.name+'</h3><p class="text-xs font-mono text-ink-400 mt-0.5">'+m.sid+'</p></div><span class="flex-shrink-0 text-[10px] md:text-xs font-mono text-brand-400 border border-brand-400/30 px-2.5 py-1 rounded whitespace-nowrap">'+m.role+'</span></div>';
+  });
+})();
+
+// ===== FOOTER =====
+(function() {
+  const socials = document.getElementById('footer-socials');
+  ['github','linkedin','twitter','mail'].forEach(icon => {
+    socials.innerHTML += '<a href="#" class="w-9 h-9 rounded-lg glass flex items-center justify-center text-ink-300 hover:text-brand-400 hover:border-brand-400/20 transition-all duration-300 hover:scale-110">'+svg(icon,'w-4 h-4')+'</a>';
+  });
+  const links = document.getElementById('footer-links');
+  let html = '';
+  Object.entries(FOOTER_LINKS).forEach(([heading, items]) => {
+    html += '<div><h4 class="text-xs font-semibold text-white mb-4">'+heading+'</h4><ul class="space-y-2.5">';
+    items.forEach(l => { html += '<li><a href="#" class="text-sm text-ink-400 hover:text-brand-400 transition-colors duration-200">'+l+'</a></li>'; });
+    html += '</ul></div>';
+  });
+  links.innerHTML = html;
+})();
+
+// ===== CONTACT FORM =====
+(function() {
+  const form = document.getElementById('contact-form');
+  const success = document.getElementById('contact-success');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    form.classList.add('hidden');
+    success.classList.remove('hidden');
+    success.classList.add('flex');
+  });
+})();
+function resetForm() {
+  const form = document.getElementById('contact-form');
+  const success = document.getElementById('contact-success');
+  form.reset();
+  form.classList.remove('hidden');
+  success.classList.add('hidden');
+  success.classList.remove('flex');
+}
+
+// ===== SCROLL REVEAL =====
+(function() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('is-visible');
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+  function observeReveals() {
+    document.querySelectorAll('.reveal:not(.is-visible)').forEach(el => observer.observe(el));
+  }
+  // Run after DOM is populated
+  setTimeout(observeReveals, 100);
+})();
+</script>
+</body>
+</html>
