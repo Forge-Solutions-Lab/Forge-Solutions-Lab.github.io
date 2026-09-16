@@ -11,7 +11,7 @@ const MEMBERS = [
     specialty: 'Strategy & System Architecture',
     github: 'https://github.com/Forge-Solutions-Lab',
     githubUsername: 'Forge-Solutions-Lab',
-    photo: 'https://images.pexels.com/photos/16825855/pexels-photo-16825855.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
+    photo: '/team/teeraphat.jpg',
   },
   {
     ru: 'RU-04',
@@ -145,7 +145,7 @@ export default function Team() {
                     src={member.photo}
                     alt={member.name}
                     loading="lazy"
-                    className="w-12 h-12 rounded-xl object-cover border border-border group-hover:border-brand-400/40 transition-colors flex-shrink-0 shadow-sm"
+                    className="w-12 h-12 rounded-xl object-cover object-top border border-border group-hover:border-brand-400/40 transition-colors flex-shrink-0 shadow-sm"
                   />
 
                   {/* Info */}
