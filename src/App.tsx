@@ -1,25 +1,23 @@
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
-import Stats from '@/components/Stats';
-import Problem from '@/components/Problem';
-import Solution from '@/components/Solution';
-import KeyFeatures from '@/components/KeyFeatures';
-import TrustedStandards from '@/components/TrustedStandards';
+import About from '@/components/About';
+import Services from '@/components/Services';
+import Projects from '@/components/Projects';
+import TechStack from '@/components/TechStack';
 import Team from '@/components/Team';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-ink-950 text-ink-100 font-body antialiased">
+    <div className="min-h-screen bg-ink-950 text-ink-100 font-body antialiased selection:bg-brand-500/25 selection:text-white">
       <Navbar />
       <main>
         <Hero />
-        <Stats />
-        <Problem />
-        <Solution />
-        <KeyFeatures />
-        <TrustedStandards />
+        <About />
+        <Services />
+        <Projects />
+        <TechStack />
         <Team />
         <Contact />
       </main>

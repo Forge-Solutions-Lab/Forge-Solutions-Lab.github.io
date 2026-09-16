@@ -1,77 +1,106 @@
-import { Zap, Github, Linkedin, Twitter, Mail } from 'lucide-react';
-
-const FOOTER_LINKS = {
-  'ผลิตภัณฑ์': ['ฟีเจอร์', 'วิธีการทำงาน', 'มาตรฐาน', 'API Docs'],
-  'บริษัท': ['เกี่ยวกับเรา', 'ร่วมงาน', 'บล็อก', 'พาร์ทเนอร์'],
-  'แหล่งข้อมูล': ['เอกสาร', 'Knowledge Base', 'Status Page', 'Security'],
-  'นโยบาย': ['นโยบายความเป็นส่วนตัว', 'เงื่อนไขการใช้งาน', 'Cookie Policy', 'SLA'],
-};
+import { Terminal, Github, Linkedin, ArrowUp, Heart } from 'lucide-react';
 
 export default function Footer() {
-  return (
-    <footer className="relative border-t border-brand-500/10 bg-ink-950 pt-16 pb-8 overflow-hidden">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-px bg-gradient-to-r from-transparent via-brand-400/20 to-transparent" />
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-      <div className="relative max-w-7xl mx-auto px-6">
-        {/* Top section */}
-        <div className="grid lg:grid-cols-5 gap-10 pb-12 border-b border-white/5">
-          {/* Brand */}
-          <div className="lg:col-span-1">
-            <a href="#hero" className="flex items-center gap-2.5 mb-4 group">
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center glow-cyan transition-transform duration-300 group-hover:scale-110">
-                <Zap className="w-5 h-5 text-white" fill="white" />
+  const scrollTo = (href: string) => {
+    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    <footer className="border-t border-white/[0.08] bg-ink-950 pt-16 pb-12 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-white/[0.06]">
+          {/* Brand Info */}
+          <div className="md:col-span-6 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center border border-brand-400/30">
+                <Terminal className="w-4 h-4 text-white" />
               </div>
-              <div className="flex flex-col leading-none">
-                <span className="font-display font-bold text-white text-sm tracking-wide">FORGE</span>
-                <span className="font-display text-brand-400 text-[10px] tracking-[0.15em] font-medium">SOLUTIONS LAB</span>
+              <div className="flex flex-col leading-tight">
+                <span className="font-display font-bold text-white text-base tracking-tight">FORGE</span>
+                <span className="font-mono text-brand-400 text-[10px] tracking-[0.2em] uppercase font-semibold">SOLUTIONS LAB</span>
               </div>
-            </a>
-            <p className="text-sm text-ink-400 leading-relaxed max-w-xs">
-              ระบบ Gen Ticket สำหรับ Data Center Datalog &amp; Ticket Automation — AI Proactive Support
+            </div>
+            <p className="text-sm text-ink-300 max-w-sm leading-relaxed">
+              We Build Systems That Learn From Experience. เราออกแบบและพัฒนาโซลูชัน AI, Machine Learning และสถาปัตยกรรมข้อมูลขนาดใหญ่ที่ฉลาดขึ้นจากประสบการณ์จริง
             </p>
-            {/* Social */}
-            <div className="flex gap-3 mt-5">
-              {[Github, Linkedin, Twitter, Mail].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="w-9 h-9 rounded-lg glass flex items-center justify-center text-ink-300 hover:text-brand-400 hover:border-brand-400/20 transition-all duration-300 hover:scale-110"
-                >
-                  <Icon className="w-4 h-4" />
-                </a>
-              ))}
+            <div className="flex items-center gap-3 pt-2">
+              <a
+                href="https://github.com/Forge-Solutions-Lab"
+                target="_blank"
+                rel="noreferrer"
+                className="w-9 h-9 rounded-lg glass-pill flex items-center justify-center text-ink-300 hover:text-white hover:border-white/[0.2] transition-colors"
+                aria-label="GitHub Organization"
+              >
+                <Github className="w-4 h-4" />
+              </a>
             </div>
           </div>
 
-          {/* Link columns */}
-          {Object.entries(FOOTER_LINKS).map(([heading, links]) => (
-            <div key={heading}>
-              <h4 className="text-xs font-semibold text-white mb-4">{heading}</h4>
-              <ul className="space-y-2.5">
-                {links.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-sm text-ink-400 hover:text-brand-400 transition-colors duration-200">
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+          {/* Quick Nav */}
+          <div className="md:col-span-3 space-y-3">
+            <div className="font-mono text-xs font-semibold text-white uppercase tracking-wider">
+              Navigation
             </div>
-          ))}
+            <ul className="space-y-2 text-xs font-sans text-ink-300">
+              <li>
+                <button onClick={() => scrollTo('#about')} className="hover:text-brand-300 transition-colors">
+                  เกี่ยวกับเรา (About Us)
+                </button>
+              </li>
+              <li>
+                <button onClick={() => scrollTo('#services')} className="hover:text-brand-300 transition-colors">
+                  บริการ &amp; ความเชี่ยวชาญ (Services)
+                </button>
+              </li>
+              <li>
+                <button onClick={() => scrollTo('#projects')} className="hover:text-brand-300 transition-colors">
+                  ผลงาน &amp; สถาปัตยกรรม (Projects)
+                </button>
+              </li>
+              <li>
+                <button onClick={() => scrollTo('#tech-stack')} className="hover:text-brand-300 transition-colors">
+                  เทคโนโลยี (Tech Stack)
+                </button>
+              </li>
+              <li>
+                <button onClick={() => scrollTo('#team')} className="hover:text-brand-300 transition-colors">
+                  ทีมวิศวกร (Engineering Team)
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Technical Scope */}
+          <div className="md:col-span-3 space-y-3">
+            <div className="font-mono text-xs font-semibold text-white uppercase tracking-wider">
+              Core Competencies
+            </div>
+            <ul className="space-y-2 text-xs font-sans text-ink-400">
+              <li>Machine Learning (T-P-E)</li>
+              <li>Concept Learning &amp; Version Space</li>
+              <li>Medallion Data Lakehouse</li>
+              <li>Enterprise RAG &amp; Text-to-SQL</li>
+              <li>Human-in-the-Loop Governance</li>
+            </ul>
+          </div>
         </div>
 
-        {/* Bottom section */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8">
-          <p className="text-xs text-ink-400">
-            &copy; {new Date().getFullYear()} Forge Solutions Lab. สงวนลิขสิทธิ์ทุกประการ
-          </p>
-          <div className="flex items-center gap-2 text-xs text-ink-400">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-400" />
-            </span>
-            ระบบทำงานปกติ
+        {/* Bottom Bar */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-ink-400">
+          <div>
+            &copy; 2026 Forge Solutions Lab. All rights reserved.
           </div>
+          <button
+            onClick={scrollToTop}
+            className="flex items-center gap-1.5 text-ink-300 hover:text-white transition-colors"
+          >
+            <span>Back to top</span>
+            <ArrowUp className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
     </footer>
