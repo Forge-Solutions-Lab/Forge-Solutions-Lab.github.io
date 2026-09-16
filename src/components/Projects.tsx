@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Server, Layers, Brain, Mail, Terminal, Check } from 'lucide-react';
+import { Server, Layers, Brain, Mail, Terminal, Check, Github, ArrowUpRight } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 const FLOW_STEPS = [
@@ -72,8 +72,8 @@ export default function Projects() {
         {/* Main Enterprise Case Study Container */}
         <div className="reveal reveal-delay-1 glass-card rounded-3xl p-8 sm:p-12 border-glow-hover relative overflow-hidden shadow-xl">
           {/* Case Study Header Banner */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-8 mb-8 border-b border-border">
-            <div>
+          <div className="flex flex-wrap items-center justify-between gap-6 pb-8 mb-8 border-b border-border">
+            <div className="max-w-2xl">
               <div className="flex items-center gap-3 mb-2">
                 <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-brand-500/10 text-brand-700 dark:text-brand-400 border border-brand-500/20 font-medium">
                   CASE STUDY #01
@@ -90,13 +90,26 @@ export default function Projects() {
               </p>
             </div>
 
-            {/* Technical Capability Tags */}
-            <div className="flex flex-wrap gap-2">
-              {['Medallion Pipeline', 'RAG & Text-to-SQL', 'Concept Rules', 'Human-in-the-Loop'].map((tag) => (
-                <span key={tag} className="font-mono text-[11px] px-3 py-1 rounded-lg bg-surface-muted text-muted-foreground border border-border">
-                  {tag}
-                </span>
-              ))}
+            {/* Actions: View on GitHub & Tags */}
+            <div className="flex flex-col sm:items-end gap-3">
+              <a
+                href="https://github.com/Forge-Solutions-Lab/Forge-Solutions-Lab.github.io"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-muted hover:bg-surface-hover text-foreground text-xs font-mono font-semibold border border-border transition-all shadow-sm group"
+              >
+                <Github className="w-4 h-4 text-brand-600 dark:text-brand-400" />
+                <span>View Source on GitHub</span>
+                <ArrowUpRight className="w-3.5 h-3.5 text-muted group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </a>
+
+              <div className="flex flex-wrap gap-2">
+                {['Medallion Pipeline', 'RAG & Text-to-SQL', 'Concept Rules', 'Human-in-the-Loop'].map((tag) => (
+                  <span key={tag} className="font-mono text-[11px] px-3 py-1 rounded-lg bg-surface-muted text-muted-foreground border border-border">
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
 

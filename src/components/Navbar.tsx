@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Menu, X, ArrowUpRight, Terminal, Sun, Moon } from 'lucide-react';
+import { Menu, X, ArrowUpRight, Terminal, Sun, Moon, Github } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
 const NAV_LINKS = [
@@ -67,8 +67,20 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Action Button & Theme Toggle */}
-        <div className="hidden lg:flex items-center gap-3">
+        {/* Action Button, GitHub Link & Theme Toggle */}
+        <div className="hidden lg:flex items-center gap-2.5">
+          {/* GitHub Org Link */}
+          <a
+            href="https://github.com/Forge-Solutions-Lab"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Forge Solutions Lab GitHub Organization"
+            className="w-9 h-9 rounded-lg glass-pill flex items-center justify-center text-muted hover:text-foreground hover:border-brand-500/30 transition-all duration-200"
+            title="ไปที่ GitHub Organization"
+          >
+            <Github className="w-4 h-4" />
+          </a>
+
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
@@ -83,9 +95,10 @@ export default function Navbar() {
             )}
           </button>
 
+          {/* Consultation CTA */}
           <button
             onClick={() => handleNavClick('#contact')}
-            className="group px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-brand-600 to-brand-500 rounded-lg hover:from-brand-500 hover:to-brand-400 transition-all duration-200 shadow-md shadow-brand-500/20 flex items-center gap-1.5"
+            className="group px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-brand-600 to-brand-500 rounded-lg hover:from-brand-500 hover:to-brand-400 transition-all duration-200 shadow-md shadow-brand-500/20 flex items-center gap-1.5 ml-1"
           >
             <span>ติดต่อ / ปรึกษาโซลูชัน</span>
             <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -94,6 +107,15 @@ export default function Navbar() {
 
         {/* Mobile toggles */}
         <div className="flex items-center gap-2 lg:hidden">
+          <a
+            href="https://github.com/Forge-Solutions-Lab"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="GitHub Organization"
+            className="w-9 h-9 flex items-center justify-center text-muted rounded-lg glass-pill hover:text-foreground transition-colors"
+          >
+            <Github className="w-4 h-4" />
+          </a>
           <button
             onClick={toggleTheme}
             aria-label="Toggle theme"

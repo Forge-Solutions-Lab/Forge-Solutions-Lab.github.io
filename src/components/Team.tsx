@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Server, GraduationCap } from 'lucide-react';
+import { Server, GraduationCap, Github, ArrowUpRight } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 const MEMBERS = [
@@ -9,6 +9,8 @@ const MEMBERS = [
     name: 'ธีรภัทร ทองตำลึง',
     role: 'Chief Executive Officer (CEO)',
     specialty: 'Strategy & System Architecture',
+    github: 'https://github.com/Forge-Solutions-Lab',
+    githubUsername: 'Forge-Solutions-Lab',
     photo: 'https://images.pexels.com/photos/16825855/pexels-photo-16825855.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
   },
   {
@@ -17,6 +19,8 @@ const MEMBERS = [
     name: 'ชรัฐภูมิ หวังเดช',
     role: 'Chief Technology Officer (CTO)',
     specialty: 'AI Architecture & Infrastructure',
+    github: 'https://github.com/Ratthapoom681',
+    githubUsername: 'Ratthapoom681',
     photo: 'https://images.pexels.com/photos/5308640/pexels-photo-5308640.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
   },
   {
@@ -25,6 +29,8 @@ const MEMBERS = [
     name: 'พงษ์ดนัย สมภาร',
     role: 'Data Engineering Lead',
     specialty: 'Medallion Pipelines & Big Data Ops',
+    github: 'https://github.com/Phongdaani08',
+    githubUsername: 'Phongdaani08',
     photo: 'https://images.pexels.com/photos/28442318/pexels-photo-28442318.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
   },
   {
@@ -33,6 +39,8 @@ const MEMBERS = [
     name: 'ถวายเกียรติ ปูวัง',
     role: 'Lead AI Engineer',
     specialty: 'Concept Learning & RAG Systems',
+    github: 'https://github.com/Forge-Solutions-Lab',
+    githubUsername: 'Forge-Solutions-Lab',
     photo: 'https://images.pexels.com/photos/38740728/pexels-photo-38740728.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
   },
   {
@@ -41,6 +49,8 @@ const MEMBERS = [
     name: 'จิมมี่ โกรสเฮียรว์',
     role: 'Senior ML Engineer',
     specialty: 'Model Evaluation & Optimization',
+    github: 'https://github.com/Forge-Solutions-Lab',
+    githubUsername: 'Forge-Solutions-Lab',
     photo: 'https://images.pexels.com/photos/5514779/pexels-photo-5514779.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
   },
 ];
@@ -140,7 +150,7 @@ export default function Team() {
 
                   {/* Info */}
                   <div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                       <h3 className="font-display font-bold text-foreground text-base group-hover:text-brand-600 dark:group-hover:text-brand-200 transition-colors">
                         {member.name}
                       </h3>
@@ -154,11 +164,22 @@ export default function Team() {
                   </div>
                 </div>
 
-                {/* Role Badge */}
+                {/* Role Badge & GitHub Action Button */}
                 <div className="flex items-center gap-3 self-end sm:self-center">
                   <span className="font-mono text-xs px-3 py-1 rounded-lg bg-surface text-brand-700 dark:text-brand-300 border border-border whitespace-nowrap shadow-sm font-medium">
                     {member.role}
                   </span>
+
+                  <a
+                    href={member.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-8 h-8 rounded-lg bg-surface hover:bg-surface-hover border border-border flex items-center justify-center text-muted hover:text-foreground hover:border-brand-500/30 transition-all shadow-sm"
+                    title={`ไปที่ GitHub ของ ${member.name} (@${member.githubUsername})`}
+                    aria-label={`GitHub profile of ${member.name}`}
+                  >
+                    <Github className="w-3.5 h-3.5" />
+                  </a>
                 </div>
               </div>
             ))}
