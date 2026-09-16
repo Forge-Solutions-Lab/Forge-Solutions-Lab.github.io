@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
@@ -9,19 +10,22 @@ export default {
         mono: ['"JetBrains Mono"', '"IBM Plex Mono"', 'monospace'],
       },
       colors: {
-        ink: {
-          950: '#060913',
-          900: '#0a0f1d',
-          850: '#0e1526',
-          800: '#131b30',
-          700: '#1c2742',
-          600: '#2a3859',
-          500: '#415277',
-          400: '#64779f',
-          300: '#94a5c6',
-          200: '#c5d2e7',
-          100: '#e7eef8',
-          50: '#f5f8fd',
+        background: 'var(--color-background)',
+        foreground: 'var(--color-foreground)',
+        surface: {
+          DEFAULT: 'var(--color-surface)',
+          muted: 'var(--color-surface-muted)',
+          hover: 'var(--color-surface-hover)',
+          glass: 'var(--color-surface-glass)',
+        },
+        border: {
+          DEFAULT: 'var(--color-border)',
+          subtle: 'var(--color-border-subtle)',
+          highlight: 'var(--color-border-highlight)',
+        },
+        muted: {
+          DEFAULT: 'var(--color-muted)',
+          foreground: 'var(--color-muted-foreground)',
         },
         brand: {
           50: '#ecfdff',

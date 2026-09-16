@@ -1,4 +1,4 @@
-import { Terminal, Github, Linkedin, ArrowUp, Heart } from 'lucide-react';
+import { Terminal, Github, ArrowUp } from 'lucide-react';
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -10,9 +10,9 @@ export default function Footer() {
   };
 
   return (
-    <footer className="border-t border-white/[0.08] bg-ink-950 pt-16 pb-12 overflow-hidden">
+    <footer className="border-t border-border bg-surface-muted pt-16 pb-12 overflow-hidden transition-colors">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-white/[0.06]">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-border">
           {/* Brand Info */}
           <div className="md:col-span-6 space-y-4">
             <div className="flex items-center gap-3">
@@ -20,11 +20,11 @@ export default function Footer() {
                 <Terminal className="w-4 h-4 text-white" />
               </div>
               <div className="flex flex-col leading-tight">
-                <span className="font-display font-bold text-white text-base tracking-tight">FORGE</span>
-                <span className="font-mono text-brand-400 text-[10px] tracking-[0.2em] uppercase font-semibold">SOLUTIONS LAB</span>
+                <span className="font-display font-bold text-foreground text-base tracking-tight">FORGE</span>
+                <span className="font-mono text-brand-600 dark:text-brand-400 text-[10px] tracking-[0.2em] uppercase font-semibold">SOLUTIONS LAB</span>
               </div>
             </div>
-            <p className="text-sm text-ink-300 max-w-sm leading-relaxed">
+            <p className="text-sm text-muted max-w-sm leading-relaxed">
               We Build Systems That Learn From Experience. เราออกแบบและพัฒนาโซลูชัน AI, Machine Learning และสถาปัตยกรรมข้อมูลขนาดใหญ่ที่ฉลาดขึ้นจากประสบการณ์จริง
             </p>
             <div className="flex items-center gap-3 pt-2">
@@ -32,7 +32,7 @@ export default function Footer() {
                 href="https://github.com/Forge-Solutions-Lab"
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-lg glass-pill flex items-center justify-center text-ink-300 hover:text-white hover:border-white/[0.2] transition-colors"
+                className="w-9 h-9 rounded-lg glass-pill flex items-center justify-center text-muted hover:text-foreground hover:border-border transition-colors"
                 aria-label="GitHub Organization"
               >
                 <Github className="w-4 h-4" />
@@ -42,32 +42,32 @@ export default function Footer() {
 
           {/* Quick Nav */}
           <div className="md:col-span-3 space-y-3">
-            <div className="font-mono text-xs font-semibold text-white uppercase tracking-wider">
+            <div className="font-mono text-xs font-semibold text-foreground uppercase tracking-wider">
               Navigation
             </div>
-            <ul className="space-y-2 text-xs font-sans text-ink-300">
+            <ul className="space-y-2 text-xs font-sans text-muted">
               <li>
-                <button onClick={() => scrollTo('#about')} className="hover:text-brand-300 transition-colors">
+                <button onClick={() => scrollTo('#about')} className="hover:text-foreground transition-colors">
                   เกี่ยวกับเรา (About Us)
                 </button>
               </li>
               <li>
-                <button onClick={() => scrollTo('#services')} className="hover:text-brand-300 transition-colors">
+                <button onClick={() => scrollTo('#services')} className="hover:text-foreground transition-colors">
                   บริการ &amp; ความเชี่ยวชาญ (Services)
                 </button>
               </li>
               <li>
-                <button onClick={() => scrollTo('#projects')} className="hover:text-brand-300 transition-colors">
+                <button onClick={() => scrollTo('#projects')} className="hover:text-foreground transition-colors">
                   ผลงาน &amp; สถาปัตยกรรม (Projects)
                 </button>
               </li>
               <li>
-                <button onClick={() => scrollTo('#tech-stack')} className="hover:text-brand-300 transition-colors">
+                <button onClick={() => scrollTo('#tech-stack')} className="hover:text-foreground transition-colors">
                   เทคโนโลยี (Tech Stack)
                 </button>
               </li>
               <li>
-                <button onClick={() => scrollTo('#team')} className="hover:text-brand-300 transition-colors">
+                <button onClick={() => scrollTo('#team')} className="hover:text-foreground transition-colors">
                   ทีมวิศวกร (Engineering Team)
                 </button>
               </li>
@@ -76,10 +76,10 @@ export default function Footer() {
 
           {/* Technical Scope */}
           <div className="md:col-span-3 space-y-3">
-            <div className="font-mono text-xs font-semibold text-white uppercase tracking-wider">
+            <div className="font-mono text-xs font-semibold text-foreground uppercase tracking-wider">
               Core Competencies
             </div>
-            <ul className="space-y-2 text-xs font-sans text-ink-400">
+            <ul className="space-y-2 text-xs font-sans text-muted">
               <li>Machine Learning (T-P-E)</li>
               <li>Concept Learning &amp; Version Space</li>
               <li>Medallion Data Lakehouse</li>
@@ -90,13 +90,13 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-ink-400">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-muted">
           <div>
             &copy; 2026 Forge Solutions Lab. All rights reserved.
           </div>
           <button
             onClick={scrollToTop}
-            className="flex items-center gap-1.5 text-ink-300 hover:text-white transition-colors"
+            className="flex items-center gap-1.5 text-muted hover:text-foreground transition-colors"
           >
             <span>Back to top</span>
             <ArrowUp className="w-3.5 h-3.5" />

@@ -9,11 +9,28 @@
     <meta property="og:title" content="Forge Solutions Lab — AI & Data Engineering" />
     <meta property="og:description" content="We Build Systems That Learn From Experience" />
     <meta property="og:type" content="website" />
+    
+    <!-- Anti-flicker theme initialization before paint -->
+    <script>
+      (function() {
+        try {
+          const stored = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = stored || (prefersDark ? 'dark' : 'light');
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
   </head>
-  <body class="bg-ink-950 text-ink-100 font-body antialiased selection:bg-brand-500/30 selection:text-white overflow-x-hidden">
+  <body class="bg-background text-foreground font-body antialiased selection:bg-brand-500/25 selection:text-foreground overflow-x-hidden transition-colors duration-300">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

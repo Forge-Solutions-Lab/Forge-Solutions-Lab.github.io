@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Cpu, GitBranch, Database, Bot, Check, ArrowRight, Layers, Binary, ShieldCheck, Sparkles } from 'lucide-react';
+import { Cpu, Database, Bot, Check, Binary } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 const SERVICES = [
@@ -71,28 +70,27 @@ const SERVICES = [
 
 export default function Services() {
   const ref = useScrollReveal<HTMLDivElement>();
-  const [selectedService, setSelectedService] = useState(0);
 
   return (
-    <section id="services" className="relative py-28 border-t border-white/[0.06] bg-ink-950 overflow-hidden">
+    <section id="services" className="relative py-28 border-t border-border bg-background overflow-hidden">
       {/* Precision grid backdrop */}
-      <div className="absolute inset-0 grid-bg-enterprise opacity-30" />
+      <div className="absolute inset-0 grid-bg-enterprise opacity-50 dark:opacity-30" />
       <div className="absolute top-1/3 right-0 w-[500px] h-[500px] bg-brand-500/5 rounded-full blur-[140px] pointer-events-none" />
 
       <div ref={ref} className="relative max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="max-w-3xl mb-16">
           <div className="reveal inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-pill mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent-400" />
-            <span className="font-mono text-xs font-semibold text-accent-300 tracking-wider uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent-500 dark:bg-accent-400" />
+            <span className="font-mono text-xs font-semibold text-accent-700 dark:text-accent-300 tracking-wider uppercase">
               SERVICES &amp; CORE CAPABILITIES
             </span>
           </div>
-          <h2 className="reveal reveal-delay-1 font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
+          <h2 className="reveal reveal-delay-1 font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground tracking-tight leading-tight">
             โซลูชันวิศวกรรมข้อมูลและ AI{' '}
             <span className="text-gradient-cyan">ระดับองค์กร</span>
           </h2>
-          <p className="reveal reveal-delay-2 text-ink-300 text-base sm:text-lg mt-4 max-w-2xl leading-relaxed">
+          <p className="reveal reveal-delay-2 text-muted text-base sm:text-lg mt-4 max-w-2xl leading-relaxed">
             ผสานทฤษฎี Machine Learning เชิงลึกเข้ากับสถาปัตยกรรมข้อมูลระดับ Enterprise เพื่อสร้างผลลัพธ์ทางธุรกิจที่พิสูจน์ได้
           </p>
         </div>
@@ -105,24 +103,24 @@ export default function Services() {
             return (
               <div
                 key={service.id}
-                className={`reveal reveal-delay-${(index % 2) + 1} glass-card rounded-2xl p-8 flex flex-col justify-between border-glow-hover relative overflow-hidden group`}
+                className={`reveal reveal-delay-${(index % 2) + 1} glass-card rounded-2xl p-8 flex flex-col justify-between border-glow-hover relative overflow-hidden group shadow-lg`}
               >
                 {/* Accent Top Border Accent */}
                 <div
                   className={`absolute top-0 left-0 right-0 h-[2px] ${
                     isBrand
-                      ? 'bg-gradient-to-r from-transparent via-brand-400 to-transparent'
-                      : 'bg-gradient-to-r from-transparent via-accent-400 to-transparent'
+                      ? 'bg-gradient-to-r from-transparent via-brand-500 to-transparent'
+                      : 'bg-gradient-to-r from-transparent via-accent-500 to-transparent'
                   }`}
                 />
 
                 <div>
                   {/* Top metadata */}
-                  <div className="flex items-center justify-between pb-4 mb-5 border-b border-white/[0.06]">
-                    <span className="font-mono text-xs font-bold text-ink-400 tracking-widest">
+                  <div className="flex items-center justify-between pb-4 mb-5 border-b border-border">
+                    <span className="font-mono text-xs font-bold text-muted tracking-widest">
                       SERVICE #{service.id}
                     </span>
-                    <span className="font-mono text-[11px] px-2.5 py-1 rounded-full bg-white/[0.04] text-ink-300 border border-white/[0.06]">
+                    <span className="font-mono text-[11px] px-2.5 py-1 rounded-full bg-surface-muted text-muted-foreground border border-border">
                       {service.category}
                     </span>
                   </div>
@@ -132,37 +130,37 @@ export default function Services() {
                     <div
                       className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-105 ${
                         isBrand
-                          ? 'bg-brand-500/10 border border-brand-500/20 text-brand-400'
-                          : 'bg-accent-500/10 border border-accent-500/20 text-accent-400'
+                          ? 'bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400'
+                          : 'bg-accent-500/10 border border-accent-500/20 text-accent-600 dark:text-accent-400'
                       }`}
                     >
                       <Icon className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="font-display text-xl font-bold text-white group-hover:text-brand-200 transition-colors leading-snug">
+                      <h3 className="font-display text-xl font-bold text-foreground group-hover:text-brand-600 dark:group-hover:text-brand-200 transition-colors leading-snug">
                         {service.title}
                       </h3>
-                      <p className="font-mono text-xs text-brand-400/90 mt-1">
+                      <p className="font-mono text-xs text-brand-600 dark:text-brand-400 mt-1 font-medium">
                         {service.tagline}
                       </p>
                     </div>
                   </div>
 
                   {/* Description */}
-                  <p className="text-sm text-ink-300 leading-relaxed mt-4 mb-6">
+                  <p className="text-sm text-muted leading-relaxed mt-4 mb-6">
                     {service.description}
                   </p>
                 </div>
 
                 {/* Capabilities Checklist */}
-                <div className="pt-5 border-t border-white/[0.06] space-y-2.5">
-                  <span className="font-mono text-[11px] uppercase tracking-wider text-ink-400 font-semibold block mb-2">
+                <div className="pt-5 border-t border-border space-y-2.5">
+                  <span className="font-mono text-[11px] uppercase tracking-wider text-muted font-semibold block mb-2">
                     Key Technical Deliverables
                   </span>
                   {service.capabilities.map((cap) => (
-                    <div key={cap} className="flex items-center gap-2.5 text-xs text-ink-200">
-                      <div className="w-4 h-4 rounded-full bg-white/[0.05] flex items-center justify-center flex-shrink-0">
-                        <Check className="w-3 h-3 text-brand-400" />
+                    <div key={cap} className="flex items-center gap-2.5 text-xs text-foreground/90">
+                      <div className="w-4 h-4 rounded-full bg-surface-muted flex items-center justify-center flex-shrink-0 border border-border">
+                        <Check className="w-3 h-3 text-brand-600 dark:text-brand-400" />
                       </div>
                       <span className="font-mono">{cap}</span>
                     </div>
