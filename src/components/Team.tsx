@@ -31,7 +31,7 @@ const MEMBERS = [
     specialty: 'Medallion Pipelines & Big Data Ops',
     github: 'https://github.com/Phongdaani08',
     githubUsername: 'Phongdaani08',
-    photo: 'https://images.pexels.com/photos/28442318/pexels-photo-28442318.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
+    photo: '/team/phongdanai.jpg',
   },
   {
     ru: 'RU-02',
