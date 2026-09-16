@@ -1,169 +1,211 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, ArrowRight, CheckCircle2, Building2, MessageSquare } from 'lucide-react';
+import { Mail, MapPin, Send, CheckCircle2, ShieldCheck, Clock, ArrowUpRight, MessageSquare } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 export default function Contact() {
   const ref = useScrollReveal<HTMLDivElement>();
-  const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', company: '', message: '' });
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    company: '',
+    service: 'Machine Learning Model Development',
+    message: '',
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setStatus('submitting');
+    
+    // Simulate brief network dispatch / ready for Formspree endpoint integration
+    setTimeout(() => {
+      setStatus('success');
+    }, 800);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   return (
-    <section id="contact" className="relative py-24 overflow-hidden">
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-brand-500/8 rounded-full blur-[120px]" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent-500/8 rounded-full blur-[120px]" />
+    <section id="contact" className="relative py-28 border-t border-white/[0.06] bg-ink-950 overflow-hidden">
+      {/* Glow */}
+      <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-brand-500/5 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-10 right-1/4 w-[450px] h-[450px] bg-accent-500/5 rounded-full blur-[140px] pointer-events-none" />
 
       <div ref={ref} className="relative max-w-7xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* Left: Info */}
-          <div>
-            <div className="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full glass-light mb-5">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent-400" />
-              <span className="text-xs font-medium text-accent-400 tracking-wide uppercase">Final CTA</span>
+        <div className="grid lg:grid-cols-12 gap-12 items-start">
+          {/* Left Column: Direct Consultation Info */}
+          <div className="lg:col-span-5 space-y-8">
+            <div>
+              <div className="reveal inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-pill mb-4">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
+                <span className="font-mono text-xs font-semibold text-brand-300 tracking-wider uppercase">
+                  INITIATE COLLABORATION
+                </span>
+              </div>
+              <h2 className="reveal reveal-delay-1 font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
+                ปรึกษาทีมวิศวกร{' '}
+                <span className="text-gradient-cyan">Forge Solutions</span>
+              </h2>
+              <p className="reveal reveal-delay-2 text-ink-300 text-base mt-4 leading-relaxed">
+                พร้อมยกระดับองค์กรด้วยสถาปัตยกรรม AI และ Data Pipeline หรือไม่? ติดต่อทีมงานเพื่อประเมินความเป็นไปได้ทางเทคนิคและการออกแบบโซลูชัน
+              </p>
             </div>
-            <h2 className="reveal reveal-delay-1 font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
-              พร้อมที่จะเปลี่ยนทีม Ops ของคุณ
-              <br />
-              ให้ทำงานแบบ
-              <span className="text-gradient-cyan"> Proactive แล้วหรือยัง?</span>
-            </h2>
-            <p className="reveal reveal-delay-2 text-lg text-ink-300 mt-5 max-w-lg">
-              ลดเวลาทำงาน ลดข้อผิดพลาด และเพิ่มความประทับใจให้ลูกค้า Data Center ของคุณตั้งแต่วันนี้
-            </p>
 
-            {/* Contact details */}
-            <div className="reveal reveal-delay-3 space-y-4 mt-8">
-              {[
-                { icon: Mail, label: 'อีเมล', value: 'contact@forge-solutions-lab.com' },
-                { icon: Phone, label: 'โทร', value: '+66 (0) 2-123-4567' },
-                { icon: MapPin, label: 'สำนักงาน', value: 'กรุงเทพมหานคร, ประเทศไทย' },
-              ].map((item) => (
-                <div key={item.label} className="flex items-center gap-4 group">
-                  <div className="w-11 h-11 rounded-xl glass flex items-center justify-center group-hover:bg-brand-500/15 transition-colors duration-300">
-                    <item.icon className="w-5 h-5 text-brand-400" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-ink-400">{item.label}</p>
-                    <p className="text-sm text-white font-medium">{item.value}</p>
-                  </div>
+            {/* Direct Channel Badges */}
+            <div className="reveal reveal-delay-3 space-y-3 pt-2">
+              <div className="flex items-center gap-4 p-4 rounded-xl bg-ink-900/60 border border-white/[0.05]">
+                <div className="w-10 h-10 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 flex-shrink-0">
+                  <Mail className="w-5 h-5" />
                 </div>
-              ))}
-            </div>
+                <div>
+                  <div className="font-mono text-[11px] text-ink-400 uppercase font-semibold">Official Inquiries</div>
+                  <div className="text-sm font-semibold text-white font-mono">contact@forge-solutions-lab.com</div>
+                </div>
+              </div>
 
-            {/* Response promise */}
-            <div className="reveal reveal-delay-4 mt-8 p-4 rounded-xl glass-light flex items-center gap-3">
-              <CheckCircle2 className="w-5 h-5 text-accent-400 flex-shrink-0" />
-              <p className="text-sm text-ink-200">เราตอบกลับทุกการสอบถามภายใน 1 วันทำการ</p>
+              <div className="flex items-center gap-4 p-4 rounded-xl bg-ink-900/60 border border-white/[0.05]">
+                <div className="w-10 h-10 rounded-lg bg-accent-500/10 border border-accent-500/20 flex items-center justify-center text-accent-400 flex-shrink-0">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="font-mono text-[11px] text-ink-400 uppercase font-semibold">Engineering Lab Location</div>
+                  <div className="text-sm font-semibold text-white">Bangkok, Thailand</div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4 rounded-xl bg-ink-900/60 border border-white/[0.05]">
+                <div className="w-10 h-10 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 flex-shrink-0">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="font-mono text-[11px] text-ink-400 uppercase font-semibold">SLA Response Guarantee</div>
+                  <div className="text-sm font-semibold text-white">ติดต่อกลับภายใน 1 วันทำการ</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Right: Form */}
-          <div className="reveal reveal-delay-2">
-            <div className="relative glass rounded-2xl p-8 glow-cyan">
-              {submitted ? (
-                <div className="flex flex-col items-center justify-center text-center py-12">
-                  <div className="w-20 h-20 rounded-full bg-accent-500/15 flex items-center justify-center mb-5 animate-fade-in">
-                    <CheckCircle2 className="w-10 h-10 text-accent-400" />
+          {/* Right Column: Functional Enterprise Consultation Form */}
+          <div className="reveal reveal-delay-2 lg:col-span-7">
+            <div className="glass-card rounded-3xl p-8 sm:p-10 border-glow-hover relative overflow-hidden">
+              {status === 'success' ? (
+                <div className="py-12 flex flex-col items-center text-center space-y-4 animate-fade-in">
+                  <div className="w-16 h-16 rounded-full bg-accent-500/20 border border-accent-500/40 flex items-center justify-center text-accent-400">
+                    <CheckCircle2 className="w-8 h-8" />
                   </div>
-                  <h3 className="font-display text-2xl font-bold text-white mb-2">ขอบคุณครับ!</h3>
-                  <p className="text-ink-300 max-w-sm">
-                    เราได้รับคำขอของคุณแล้ว ทีมงานของเราจะติดต่อกลับภายใน 1 วันทำการ
-                    เพื่อนัดหมายสาธิตระบบ
+                  <h3 className="font-display text-2xl font-bold text-white">ได้รับคำขอของคุณเรียบร้อยแล้ว</h3>
+                  <p className="text-sm text-ink-300 max-w-md leading-relaxed">
+                    ขอบคุณที่ให้ความสนใจในโซลูชันของ Forge Solutions Lab ทีมวิศวกรของเราจะตรวจสอบโจทย์ทางเทคนิคและติดต่อกลับเพื่อจัดเวลาประชุมโดยเร็วที่สุด
                   </p>
                   <button
-                    onClick={() => { setSubmitted(false); setForm({ name: '', email: '', company: '', message: '' }); }}
-                    className="mt-6 px-6 py-2.5 text-sm font-semibold text-brand-400 hover:text-brand-300 transition-colors"
+                    onClick={() => {
+                      setStatus('idle');
+                      setForm({
+                        name: '',
+                        email: '',
+                        company: '',
+                        service: 'Machine Learning Model Development',
+                        message: '',
+                      });
+                    }}
+                    className="mt-4 px-6 py-2.5 rounded-lg bg-ink-900 hover:bg-ink-800 text-brand-300 text-xs font-mono font-semibold border border-white/[0.08] transition-colors"
                   >
-                    ส่งคำขอใหม่
+                    ส่งข้อความอื่นเพิ่มเติม
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
-                  <div>
-                    <label className="block text-xs font-medium text-ink-300 mb-2">
-                      ชื่อ-นามสกุล
-                    </label>
-                    <div className="relative">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-mono text-xs font-semibold text-ink-300 mb-2 uppercase">
+                        ชื่อ-นามสกุล *
+                      </label>
                       <input
                         type="text"
                         name="name"
                         required
                         value={form.name}
                         onChange={handleChange}
-                        placeholder="สมชาย ใจดี"
-                        className="w-full px-4 py-3 pl-11 bg-ink-800/50 border border-white/10 rounded-xl text-white placeholder-ink-500 focus:outline-none focus:border-brand-400/40 focus:ring-1 focus:ring-brand-400/20 transition-all"
+                        placeholder="ดร. สมชาย มุ่งมั่น"
+                        className="w-full px-4 py-3 rounded-xl bg-ink-950/80 border border-white/[0.08] text-white text-sm focus:outline-none focus:border-brand-400 transition-colors font-sans placeholder:text-ink-600"
                       />
-                      <MessageSquare className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-400" />
                     </div>
-                  </div>
 
-                  <div>
-                    <label className="block text-xs font-medium text-ink-300 mb-2">
-                      อีเมลที่ใช้งาน
-                    </label>
-                    <div className="relative">
+                    <div>
+                      <label className="block font-mono text-xs font-semibold text-ink-300 mb-2 uppercase">
+                        อีเมลองค์กร *
+                      </label>
                       <input
                         type="email"
                         name="email"
                         required
                         value={form.email}
                         onChange={handleChange}
-                        placeholder="name@company.com"
-                        className="w-full px-4 py-3 pl-11 bg-ink-800/50 border border-white/10 rounded-xl text-white placeholder-ink-500 focus:outline-none focus:border-brand-400/40 focus:ring-1 focus:ring-brand-400/20 transition-all"
+                        placeholder="somchai@enterprise.co.th"
+                        className="w-full px-4 py-3 rounded-xl bg-ink-950/80 border border-white/[0.08] text-white text-sm focus:outline-none focus:border-brand-400 transition-colors font-sans placeholder:text-ink-600"
                       />
-                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-400" />
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-medium text-ink-300 mb-2">
-                      บริษัท
-                    </label>
-                    <div className="relative">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-mono text-xs font-semibold text-ink-300 mb-2 uppercase">
+                        ชื่อบริษัท / หน่วยงาน
+                      </label>
                       <input
                         type="text"
                         name="company"
                         value={form.company}
                         onChange={handleChange}
-                        placeholder="ชื่อบริษัทของคุณ"
-                        className="w-full px-4 py-3 pl-11 bg-ink-800/50 border border-white/10 rounded-xl text-white placeholder-ink-500 focus:outline-none focus:border-brand-400/40 focus:ring-1 focus:ring-brand-400/20 transition-all"
+                        placeholder="บริษัท นวัตกรรม จำกัด"
+                        className="w-full px-4 py-3 rounded-xl bg-ink-950/80 border border-white/[0.08] text-white text-sm focus:outline-none focus:border-brand-400 transition-colors font-sans placeholder:text-ink-600"
                       />
-                      <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-400" />
+                    </div>
+
+                    <div>
+                      <label className="block font-mono text-xs font-semibold text-ink-300 mb-2 uppercase">
+                        ประเภทบริการที่สนใจ
+                      </label>
+                      <select
+                        name="service"
+                        value={form.service}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 rounded-xl bg-ink-950/80 border border-white/[0.08] text-white text-sm focus:outline-none focus:border-brand-400 transition-colors font-sans"
+                      >
+                        <option value="Machine Learning Model Development">Machine Learning Model Development (T-P-E)</option>
+                        <option value="Concept Learning & Decision Rules">Concept Learning &amp; Version Space Rules</option>
+                        <option value="Data Pipeline (Medallion Architecture)">Data Pipeline (Medallion Bronze/Silver/Gold)</option>
+                        <option value="AI Agent & RAG Automation">AI Agent, RAG &amp; Autonomous Systems</option>
+                        <option value="Other Consultation">การปรึกษาและออกแบบสถาปัตยกรรมเฉพาะทาง</option>
+                      </select>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-ink-300 mb-2">
-                      รายละเอียดเพิ่มเติม
+                    <label className="block font-mono text-xs font-semibold text-ink-300 mb-2 uppercase">
+                      รายละเอียดโจทย์ หรือข้อสอบถาม *
                     </label>
                     <textarea
                       name="message"
                       rows={4}
+                      required
                       value={form.message}
                       onChange={handleChange}
-                      placeholder="บอกเราเกี่ยวกับ Data Center ของคุณ และสิ่งที่ต้องการให้อัตโนมัติ..."
-                      className="w-full px-4 py-3 bg-ink-800/50 border border-white/10 rounded-xl text-white placeholder-ink-500 focus:outline-none focus:border-brand-400/40 focus:ring-1 focus:ring-brand-400/20 transition-all resize-none"
+                      placeholder="อธิบายปัญหา ข้อมูลที่มี หรือเป้าหมายทางธุรกิจที่ต้องการนำ AI และ Data Pipeline มาประยุกต์ใช้..."
+                      className="w-full px-4 py-3 rounded-xl bg-ink-950/80 border border-white/[0.08] text-white text-sm focus:outline-none focus:border-brand-400 transition-colors font-sans placeholder:text-ink-600 resize-none"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="group w-full px-6 py-3.5 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:shadow-xl hover:shadow-brand-500/30 hover:scale-[1.02] transition-all duration-300"
+                    disabled={status === 'submitting'}
+                    className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-brand-500/25 transition-all duration-200 disabled:opacity-50"
                   >
-                    ติดต่อเราเพื่อพูดคุยรายละเอียด
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    <Send className="w-4 h-4" />
+                    <span>{status === 'submitting' ? 'กำลังส่งข้อมูล...' : 'ส่งข้อมูลเพื่อนัดหมายปรึกษา'}</span>
                   </button>
-                  <p className="text-xs text-ink-400 text-center">
-                    การส่งแบบฟอร์ม ถือว่าคุณยอมรับนโยบายความเป็นส่วนตัวของเรา
-                  </p>
                 </form>
               )}
             </div>
