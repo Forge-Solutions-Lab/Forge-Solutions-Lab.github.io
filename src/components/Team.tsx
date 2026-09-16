@@ -51,7 +51,7 @@ const MEMBERS = [
     specialty: 'Model Evaluation & Optimization',
     github: 'https://github.com/Forge-Solutions-Lab',
     githubUsername: 'Forge-Solutions-Lab',
-    photo: 'https://images.pexels.com/photos/5514779/pexels-photo-5514779.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
+    photo: '/team/jimmy.jpg',
   },
 ];
 
