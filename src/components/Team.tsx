@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Server, GraduationCap, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
+import { Server, GraduationCap } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 const MEMBERS = [
@@ -50,9 +50,9 @@ export default function Team() {
   const [academicMode, setAcademicMode] = useState(false);
 
   return (
-    <section id="team" className="relative py-28 border-t border-white/[0.06] bg-ink-950/70 overflow-hidden">
+    <section id="team" className="relative py-28 border-t border-border bg-background overflow-hidden">
       {/* Precision grid backdrop */}
-      <div className="absolute inset-0 grid-bg-enterprise opacity-30" />
+      <div className="absolute inset-0 grid-bg-enterprise opacity-50 dark:opacity-30" />
       <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-brand-500/5 rounded-full blur-[140px] pointer-events-none" />
 
       <div ref={ref} className="relative max-w-7xl mx-auto px-6">
@@ -60,16 +60,16 @@ export default function Team() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
           <div className="max-w-3xl">
             <div className="reveal inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-pill mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent-400" />
-              <span className="font-mono text-xs font-semibold text-accent-300 tracking-wider uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-500 dark:bg-accent-400" />
+              <span className="font-mono text-xs font-semibold text-accent-700 dark:text-accent-300 tracking-wider uppercase">
                 ENGINEERING LEADERSHIP
               </span>
             </div>
-            <h2 className="reveal reveal-delay-1 font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
+            <h2 className="reveal reveal-delay-1 font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground tracking-tight leading-tight">
               ทีมวิศวกรและผู้บริหาร{' '}
               <span className="text-gradient">Forge Solutions Lab</span>
             </h2>
-            <p className="reveal reveal-delay-2 text-ink-300 text-base sm:text-lg mt-4 max-w-2xl leading-relaxed">
+            <p className="reveal reveal-delay-2 text-muted text-base sm:text-lg mt-4 max-w-2xl leading-relaxed">
               ทีมวิศวกรผู้เชี่ยวชาญด้าน Machine Learning, Data Architecture และ Cloud Solutions ที่พร้อมผลักดันนวัตกรรมองค์กรของคุณ
             </p>
           </div>
@@ -80,16 +80,16 @@ export default function Team() {
               onClick={() => setAcademicMode(!academicMode)}
               className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl font-mono text-xs transition-all duration-200 border ${
                 academicMode
-                  ? 'bg-brand-500/20 text-brand-300 border-brand-500/40 shadow-lg shadow-brand-500/20 font-semibold'
-                  : 'bg-ink-900/80 hover:bg-ink-800 text-ink-300 border-white/[0.08]'
+                  ? 'bg-brand-500/20 text-brand-700 dark:text-brand-300 border-brand-500/40 shadow-lg shadow-brand-500/10 font-semibold'
+                  : 'bg-surface-muted hover:bg-surface-hover text-muted border-border'
               }`}
               title="สลับโหมดเพื่อแสดงรหัสนักศึกษาสำหรับตรวจงานวิชาการ"
             >
-              <GraduationCap className={`w-4 h-4 ${academicMode ? 'text-brand-400' : 'text-ink-400'}`} />
+              <GraduationCap className={`w-4 h-4 ${academicMode ? 'text-brand-600 dark:text-brand-400' : 'text-muted'}`} />
               <span>{academicMode ? 'Academic View: ON' : 'Academic View (Show Student IDs)'}</span>
               <span
                 className={`w-2 h-2 rounded-full transition-colors ${
-                  academicMode ? 'bg-brand-400 animate-pulse' : 'bg-ink-600'
+                  academicMode ? 'bg-brand-600 dark:bg-brand-400 animate-pulse' : 'bg-muted'
                 }`}
               />
             </button>
@@ -97,20 +97,20 @@ export default function Team() {
         </div>
 
         {/* Executive Engineering Roster - Structured List */}
-        <div className="reveal reveal-delay-2 glass-card rounded-3xl p-6 sm:p-8 border-glow-hover">
+        <div className="reveal reveal-delay-2 glass-card rounded-3xl p-6 sm:p-8 border-glow-hover shadow-xl">
           {/* Rack Header */}
-          <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/[0.08] font-mono text-xs text-ink-400">
+          <div className="flex items-center justify-between pb-4 mb-4 border-b border-border font-mono text-xs text-muted">
             <div className="flex items-center gap-2">
-              <Server className="w-4 h-4 text-brand-400" />
-              <span className="text-white font-semibold">ENGINEERING CLUSTER TR-01</span>
+              <Server className="w-4 h-4 text-brand-600 dark:text-brand-400" />
+              <span className="text-foreground font-semibold">ENGINEERING CLUSTER TR-01</span>
             </div>
             <div className="flex items-center gap-3">
               {academicMode && (
-                <span className="text-brand-300 font-mono text-[11px] px-2 py-0.5 rounded bg-brand-500/10 border border-brand-500/20 animate-fade-in">
+                <span className="text-brand-700 dark:text-brand-300 font-mono text-[11px] px-2 py-0.5 rounded bg-brand-500/10 border border-brand-500/20 animate-fade-in font-medium">
                   STUDENT ID VERIFIED
                 </span>
               )}
-              <span className="text-accent-400">5 ACTIVE UNITS INSTALLED</span>
+              <span className="text-accent-600 dark:text-accent-400 font-medium">5 ACTIVE UNITS INSTALLED</span>
             </div>
           </div>
 
@@ -119,13 +119,13 @@ export default function Team() {
             {MEMBERS.map((member) => (
               <div
                 key={member.ru}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-ink-900/50 border border-white/[0.04] hover:border-brand-500/20 hover:bg-ink-900/80 transition-all duration-200 group"
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-surface-muted/60 border border-border hover:border-brand-500/30 hover:bg-surface-muted transition-all duration-200 group"
               >
                 <div className="flex items-center gap-4">
                   {/* Status Indicator & RU */}
                   <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-accent-400 shadow-sm shadow-accent-400 flex-shrink-0" />
-                    <span className="font-mono text-xs font-bold text-brand-400 w-12 flex-shrink-0">
+                    <span className="w-2 h-2 rounded-full bg-accent-500 dark:bg-accent-400 shadow-sm shadow-accent-400 flex-shrink-0" />
+                    <span className="font-mono text-xs font-bold text-brand-600 dark:text-brand-400 w-12 flex-shrink-0">
                       {member.ru}
                     </span>
                   </div>
@@ -135,28 +135,28 @@ export default function Team() {
                     src={member.photo}
                     alt={member.name}
                     loading="lazy"
-                    className="w-12 h-12 rounded-xl object-cover border border-white/[0.1] group-hover:border-brand-400/40 transition-colors flex-shrink-0"
+                    className="w-12 h-12 rounded-xl object-cover border border-border group-hover:border-brand-400/40 transition-colors flex-shrink-0 shadow-sm"
                   />
 
                   {/* Info */}
                   <div>
                     <div className="flex items-center gap-3">
-                      <h3 className="font-display font-bold text-white text-base group-hover:text-brand-200 transition-colors">
+                      <h3 className="font-display font-bold text-foreground text-base group-hover:text-brand-600 dark:group-hover:text-brand-200 transition-colors">
                         {member.name}
                       </h3>
                       {academicMode && (
-                        <span className="font-mono text-xs text-brand-300 bg-brand-500/10 border border-brand-500/25 px-2.5 py-0.5 rounded animate-fade-in font-medium">
+                        <span className="font-mono text-xs text-brand-700 dark:text-brand-300 bg-brand-500/10 border border-brand-500/25 px-2.5 py-0.5 rounded animate-fade-in font-medium">
                           ID: {member.sid}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-ink-400 font-sans mt-0.5">{member.specialty}</p>
+                    <p className="text-xs text-muted font-sans mt-0.5">{member.specialty}</p>
                   </div>
                 </div>
 
                 {/* Role Badge */}
                 <div className="flex items-center gap-3 self-end sm:self-center">
-                  <span className="font-mono text-xs px-3 py-1 rounded-lg bg-ink-950 text-brand-300 border border-white/[0.06] whitespace-nowrap">
+                  <span className="font-mono text-xs px-3 py-1 rounded-lg bg-surface text-brand-700 dark:text-brand-300 border border-border whitespace-nowrap shadow-sm font-medium">
                     {member.role}
                   </span>
                 </div>
@@ -165,7 +165,7 @@ export default function Team() {
           </div>
 
           {/* Cluster Footer */}
-          <div className="flex flex-wrap items-center justify-between pt-5 mt-4 border-t border-white/[0.06] font-mono text-[11px] text-ink-400">
+          <div className="flex flex-wrap items-center justify-between pt-5 mt-4 border-t border-border font-mono text-[11px] text-muted">
             <span>FORGE SOLUTIONS LAB &middot; TALENT POOL</span>
             <span>DATA CENTER &middot; AI LAB DEPLOYMENT READY</span>
           </div>

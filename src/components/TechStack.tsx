@@ -1,4 +1,4 @@
-import { Cpu, Database, Layout, Server, Terminal } from 'lucide-react';
+import { Cpu, Database, Layout, Server } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 const TECH_CATEGORIES = [
@@ -57,7 +57,7 @@ export default function TechStack() {
   const ref = useScrollReveal<HTMLDivElement>();
 
   return (
-    <section id="tech-stack" className="relative py-28 border-t border-white/[0.06] bg-ink-950 overflow-hidden">
+    <section id="tech-stack" className="relative py-28 border-t border-border bg-background overflow-hidden">
       {/* Background illumination */}
       <div className="absolute top-1/2 left-1/4 w-[500px] h-[500px] bg-brand-500/5 rounded-full blur-[150px] pointer-events-none" />
 
@@ -65,16 +65,16 @@ export default function TechStack() {
         {/* Header */}
         <div className="max-w-3xl mb-16">
           <div className="reveal inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-pill mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
-            <span className="font-mono text-xs font-semibold text-brand-300 tracking-wider uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-500 dark:bg-brand-400" />
+            <span className="font-mono text-xs font-semibold text-brand-700 dark:text-brand-300 tracking-wider uppercase">
               TECHNOLOGY ECOSYSTEM
             </span>
           </div>
-          <h2 className="reveal reveal-delay-1 font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
+          <h2 className="reveal reveal-delay-1 font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground tracking-tight leading-tight">
             เทคโนโลยีและเครื่องมือ{' '}
             <span className="text-gradient-cyan">ระดับ Enterprise</span>
           </h2>
-          <p className="reveal reveal-delay-2 text-ink-300 text-base sm:text-lg mt-4 max-w-2xl leading-relaxed">
+          <p className="reveal reveal-delay-2 text-muted text-base sm:text-lg mt-4 max-w-2xl leading-relaxed">
             โครงสร้างเทคโนโลยีที่ผ่านการคัดสรรเพื่อความเสถียร ความปลอดภัย และประสิทธิภาพสูงสุดในระดับอุตสาหกรรม
           </p>
         </div>
@@ -86,18 +86,18 @@ export default function TechStack() {
             return (
               <div
                 key={cat.category}
-                className={`reveal reveal-delay-${idx + 1} glass-card rounded-2xl p-7 border-glow-hover flex flex-col justify-between`}
+                className={`reveal reveal-delay-${idx + 1} glass-card rounded-2xl p-7 border-glow-hover flex flex-col justify-between shadow-lg`}
               >
                 <div>
                   {/* Category Header */}
-                  <div className="flex items-center justify-between pb-4 mb-5 border-b border-white/[0.06]">
+                  <div className="flex items-center justify-between pb-4 mb-5 border-b border-border">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400">
+                      <div className="w-10 h-10 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-600 dark:text-brand-400">
                         <Icon className="w-5 h-5" />
                       </div>
-                      <h3 className="font-display font-bold text-lg text-white">{cat.category}</h3>
+                      <h3 className="font-display font-bold text-lg text-foreground">{cat.category}</h3>
                     </div>
-                    <span className="font-mono text-[11px] px-2.5 py-1 rounded bg-ink-900 text-ink-300 border border-white/[0.06]">
+                    <span className="font-mono text-[11px] px-2.5 py-1 rounded bg-surface-muted text-muted-foreground border border-border">
                       {cat.tag}
                     </span>
                   </div>
@@ -107,10 +107,10 @@ export default function TechStack() {
                     {cat.technologies.map((t) => (
                       <div
                         key={t.name}
-                        className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg bg-ink-900/40 border border-white/[0.04] hover:border-white/[0.08] transition-colors"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg bg-surface-muted/70 border border-border hover:border-brand-500/30 transition-colors"
                       >
-                        <span className="font-mono text-xs font-semibold text-white">{t.name}</span>
-                        <span className="text-xs text-ink-400 sm:text-right mt-0.5 sm:mt-0 font-sans">{t.role}</span>
+                        <span className="font-mono text-xs font-semibold text-foreground">{t.name}</span>
+                        <span className="text-xs text-muted sm:text-right mt-0.5 sm:mt-0 font-sans">{t.role}</span>
                       </div>
                     ))}
                   </div>
