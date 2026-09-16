@@ -41,7 +41,7 @@ const MEMBERS = [
     specialty: 'Concept Learning & RAG Systems',
     github: 'https://github.com/Forge-Solutions-Lab',
     githubUsername: 'Forge-Solutions-Lab',
-    photo: 'https://images.pexels.com/photos/38740728/pexels-photo-38740728.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
+    photo: '/team/thawaikiat.png',
   },
   {
     ru: 'RU-01',
