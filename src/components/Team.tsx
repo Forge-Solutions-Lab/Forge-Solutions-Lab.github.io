@@ -16,12 +16,12 @@ const MEMBERS = [
   {
     ru: 'RU-04',
     sid: '6752301336',
-    name: 'ชรัฐภูมิ หวังเดช',
+    name: 'รัฐภูมิ หวังเดช',
     role: 'Chief Technology Officer (CTO)',
     specialty: 'AI Architecture & Infrastructure',
     github: 'https://github.com/Ratthapoom681',
     githubUsername: 'Ratthapoom681',
-    photo: 'https://images.pexels.com/photos/5308640/pexels-photo-5308640.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
+    photo: '/team/ratthapoom.png',
   },
   {
     ru: 'RU-05',
