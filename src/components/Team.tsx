@@ -9,7 +9,7 @@ const MEMBERS = [
     name: 'ธีรภัทร ทองตำลึง',
     role: 'Chief Executive Officer (CEO)',
     specialty: 'Strategy & System Architecture',
-    github: 'https://github.com/Forge-Solutions-Lab',
+    github: 'https://github.com/RyujiNishigami',
     githubUsername: 'Forge-Solutions-Lab',
     photo: '/team/teeraphat.jpg',
   },
