@@ -21,7 +21,7 @@
 จากสไลด์ `Introduction to Machine Learning` และ `Concept Learning` เราดึงแก่นมาตั้งเป็น "ความเชี่ยวชาญ" ของบริษัทได้ดังนี้ ใช้เป็น copy พร้อมวางในเว็บได้เลย:
 
 ### 1.1 Positioning ของบริษัท
-> **Forge Solutions Lab** เป็นบริษัทด้าน AI, Machine Learning และ Data Engineering ที่เน้นสร้างระบบที่ "เรียนรู้และแม่นยำขึ้นจากข้อมูลจริง" ไม่ใช่แค่ระบบตามกฎตายตัว — สอดคล้องกับนิยาม ML ที่ว่า *"a computer program improves its performance at some task through experience and data"*
+> **Forge Solutions Lab** เป็นบริษัทด้าน AI, Machine Learning และ Data Engineering ที่เน้นสร้างระบบที่ "เรียนรู้และแม่นยำขึ้นจากข้อมูลจริง" ไม่ใช่แค่ระบบตามกฎตายตัว — สอดคล้องกับนิยาม ML ที่ว่า *"a computer program improves it's performance at some task through experience and data"*
 
 ### 1.2 Hero Section (Copy พร้อมใช้)
 ```text
