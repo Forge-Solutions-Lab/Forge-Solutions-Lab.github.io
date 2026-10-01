@@ -79,7 +79,7 @@ Backend / Infra
 
 ### 1.6 Featured Project (ใส่ของเดิมไปก่อนแบบลวกๆ ตามที่ตกลง — ห้ามลบทิ้ง)
 
-ย้ายเนื้อหาโปรเจกต์เดิมทั้งหมด (จาก `Hero.tsx`, `Problem.tsx`, `Solution.tsx`, `KeyFeatures.tsx`, `Stats.tsx`, `TrustedStandards.tsx`) ไปเป็น **1 การ์ดโปรเจกต์เด่น** ในหมวด Projects โดยสรุปเป็น:
+ย้ายเนื้อหาโปรเจกต์เดิมทั้งหมด (จาก `Hero.tsx`, `Problem.tsx`, `Solution.tsx`, `KeyFeatures.tsx`, `Stats.tsx`, `TrustedStandards.tsx`) ไปเป็น **1 การ์ดโปรเจกต์เด่น** ในหมวด Projects โดยสรุปวเป็น:
 
 ```text
 ชื่อโปรเจกต์: AI Proactive Support & Automated Ticket Generation Engine
