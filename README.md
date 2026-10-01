@@ -20,7 +20,7 @@ Our mission is to design clean, functional software while learning real-world en
 | **ชรัฐภูมิ หวังเดช** | CTO | 6752301336 |
 | **พงษ์ดนัย สมภาร** | Data Lead | 6752301255 |
 | **ถวายเกียรติ ปูวัง** | AI Engineer | 6752301271 |
-| **จิมมี่ โกรสเฮียรว์** | ML Engineer | 6752300658 |
+| **จิมมี่ โกรทเฮียร์** | ML Engineer | 6752300658 |
 
 ---
 
