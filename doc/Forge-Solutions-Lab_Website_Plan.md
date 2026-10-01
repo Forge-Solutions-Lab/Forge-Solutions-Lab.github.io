@@ -81,7 +81,7 @@ Backend / Infra
 
 ย้ายเนื้อหาโปรเจกต์เดิมทั้งหมด (จาก `Hero.tsx`, `Problem.tsx`, `Solution.tsx`, `KeyFeatures.tsx`, `Stats.tsx`, `TrustedStandards.tsx`) ไปเป็น **1 การ์ดโปรเจกต์เด่น** ในหมวด Projects โดยสรุปว่าเป็น:
 
-```TEXt
+```TEXT
 ชื่อโปรเจกต์: AI Proactive Support & Automated Ticket Generation Engine
              (Gen Ticket Engine — Data Center Monitoring)
 
