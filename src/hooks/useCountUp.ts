@@ -1,5 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 
+/**
+ * Custom hook to animate a numerical value from `start` to `target`
+ * using cubic easing when the bound container scrolls into view.
+ *
+ * @param target - The destination number to count up to
+ * @param duration - Duration of the animation in milliseconds (defaults to 2000ms)
+ * @param start - Initial number before animation starts (defaults to 0)
+ * @returns An object with the current animated `value` and a `ref` for the target container
+ */
 export function useCountUp(target: number, duration = 2000, start = 0) {
   const [value, setValue] = useState(start);
   const [hasAnimated, setHasAnimated] = useState(false);
