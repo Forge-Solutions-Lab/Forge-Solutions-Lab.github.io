@@ -9,6 +9,10 @@ import Team from '@/components/Team';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 
+/**
+ * Main Application Layout
+ * Wraps all landing page sections within the ThemeProvider for dark/light mode support.
+ */
 export default function App() {
   return (
     <ThemeProvider>
