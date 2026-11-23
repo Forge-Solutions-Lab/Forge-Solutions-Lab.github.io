@@ -26,9 +26,32 @@ Our mission is to design clean, functional software while learning real-world en
 
 ## Tech Stack
 
-* **Frontend & Web:** React, Vite, TypeScript, Tailwind CSS
+* **Frontend & Web:** React 18, Vite, TypeScript, Tailwind CSS
+* **Icons & UI:** Lucide React
+* **Backend Integration:** Supabase Client
 * **Core Algorithms:** Python (NumPy, Matplotlib)
 * **Deployment & Hosting:** GitHub Pages
+
+---
+
+## Project Structure
+
+```text
+Forge-Solutions-Lab.github.io/
+├── doc/               # Documentation & engineering guides
+│   └── GIT_WORKFLOW.md# Git workflow & branching guidelines
+├── public/            # Static assets and team photos
+├── src/
+│   ├── components/    # Reusable UI components (Hero, About, Projects, etc.)
+│   ├── context/       # Application React context (ThemeContext)
+│   ├── hooks/         # Custom React hooks (useCountUp, useScrollReveal)
+│   ├── App.tsx        # Main application component & layout
+│   ├── main.tsx       # DOM root entry point
+│   └── index.css      # Tailwind directives & global styling
+├── index.html         # HTML template
+├── vite.config.ts     # Vite configuration
+└── package.json       # Project dependencies and npm scripts
+```
 
 ---
 
@@ -38,6 +61,18 @@ Our mission is to design clean, functional software while learning real-world en
 | :--- | :--- |
 | [`Forge-Solutions-Lab.github.io`](https://github.com/Forge-Solutions-Lab/Forge-Solutions-Lab.github.io) | Organization landing page (this repo) |
 | _(เพิ่ม repo อื่นๆ ที่มี พร้อมคำอธิบายสั้นๆ)_ | |
+
+---
+
+## Available Scripts
+
+| Command | Description |
+| :--- | :--- |
+| `npm run dev` | Starts the Vite development server with HMR |
+| `npm run build` | Compiles TypeScript and generates production bundle |
+| `npm run preview` | Locally previews the production build |
+| `npm run lint` | Runs ESLint to check code quality |
+| `npm run typecheck` | Validates TypeScript types across the project |
 
 ---
 
@@ -57,6 +92,8 @@ npm run dev
 # Build for production
 npm run build
 ```
+
+For team collaboration and Git standards, please refer to [Git Workflow Guidelines](doc/GIT_WORKFLOW.md).
 
 ---
 
